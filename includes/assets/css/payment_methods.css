@@ -12,7 +12,7 @@
 	height: auto;
 	width: auto;
 	margin-left: auto;
-    float: right;
+	float: right;
 }
 
 .payment_method_wc_gopay_gateway_selection {
@@ -22,4 +22,49 @@
 	flex-wrap: wrap;
 	position: relative;
 	overflow: hidden;
+}
+
+.wc-gopay-methods-list {
+	margin: 15px 0;
+}
+
+.wc-gopay-method {
+	border: 1px solid #e0e0e0;
+	border-radius: 4px;
+	margin-bottom: 8px;
+	padding: 12px;
+	transition: all 0.2s ease;
+}
+
+.wc-gopay-method:hover {
+	border-color: #b0b0b0;
+	background-color: #f9f9f9;
+}
+
+.wc-gopay-method.selected {
+	border-color: #2271b1;
+	background-color: #f0f7fc;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.wc-gopay-method-input {
+	display: flex;
+	align-items: center;
+	width: 100%;
+}
+
+.wc-gopay-method-input span {
+	flex: 1;
+	margin-left: 8px;
+	font-weight: 500;
+}
+
+.wc-gopay-method-image {
+	max-height: 30px;
+	width: auto;
+	margin-left: 10px;
+}
+
+.wc-gopay-description {
+	margin-bottom: 15px;
 }

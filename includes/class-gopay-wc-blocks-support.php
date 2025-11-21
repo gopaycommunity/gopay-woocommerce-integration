@@ -34,7 +34,7 @@ final class WC_Gopay_Blocks_Support extends AbstractPaymentMethodType {
 				'wp-html-entities',
 				'wp-i18n',
 			],
-			null,
+			GOPAY_WOOCOMMERCE_VERSION,
 			true
 		);
 
@@ -46,10 +46,77 @@ final class WC_Gopay_Blocks_Support extends AbstractPaymentMethodType {
 		return [ 'wc-gopay-blocks-integration' ];
 	}
 
-	public function get_payment_method_data() {
+	/**
+	 * Returns an array of key=>value pairs of data made available to the payment methods script client side.
+	 *
+	 * @return array
+	 */
+	public function get_payment_method_data(){
+		$payment_methods_output = [];
+
+		// Only supported by the currency.
+		$supported_payment_methods = $this->gateway->get_option(
+			'gopay_payment_methods_' . get_woocommerce_currency(),
+			array()
+		);
+		$supported_banks = $this->gateway->get_option(
+			'gopay_banks_' . get_woocommerce_currency(),
+			array()
+		);
+
+		// All selected in the settings page.
+		$selected_payment_methods = $this->gateway->get_option('enable_gopay_payment_methods', array());
+		$selected_banks = $this->gateway->get_option('enable_banks', array());
+
+		// Intersection of all selected and the supported by the currency.
+		$payment_methods = array();
+		if (is_array($selected_payment_methods)) {
+			foreach ($selected_payment_methods as $method) {
+				if (isset($supported_payment_methods[$method])) {
+					$payment_methods[$method] = $supported_payment_methods[$method];
+				}
+			}
+		}
+
+		$banks = array_intersect_key((array) $supported_banks, array_flip((array) $selected_banks));
+
+		// Check if subscription - only card payment is enabled.
+		if (class_exists('Gopay_Gateway_Subscriptions') && Gopay_Gateway_Subscriptions::cart_contains_subscription()) {
+			if (array_key_exists('PAYMENT_CARD', (array) $payment_methods)) {
+				$payment_methods = array('PAYMENT_CARD' => $payment_methods['PAYMENT_CARD']);
+			} else {
+				$payment_methods = array();
+			}
+		}
+
+		if (is_array($payment_methods)) {
+			foreach ($payment_methods as $payment_method_code => $payment_method_details) {
+				if ('BANK_ACCOUNT' === $payment_method_code && !$this->gateway->get_simplified_bank_selection()) {
+					if (is_array($banks)) {
+						foreach ($banks as $bank_code => $bank_details) {
+							$payment_methods_output[] = [
+								'id' => $bank_code,
+								'label' => __($bank_details['label'] ?? $bank_code, 'gopay-gateway'),
+								'image' => $bank_details['image'] ?? '',
+							];
+						}
+					}
+					continue;
+				}
+
+				$payment_methods_output[] = [
+					'id' => $payment_method_code,
+					'label' => __($payment_method_details['label'] ?? $payment_method_code, 'gopay-gateway'),
+					'image' => $payment_method_details['image'] ?? '',
+				];
+			}
+		}
+
 		return [
-			'title' => $this->gateway->title,
-			'description' => $this->gateway->description,
+			'title' => $this->get_setting('title'),
+			'description' => $this->get_setting('description'),
+			'supports' => $this->get_supported_features(),
+			'paymentMethods' => $payment_methods_output,
 		];
 	}
 }
