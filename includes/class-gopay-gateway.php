@@ -155,6 +155,10 @@ function init_gopay_gateway_gateway() {
 			return __( $this->method_description, 'gopay-gateway' );
 		}
 
+		public function get_simplified_bank_selection() {
+			return $this->simplified_bank_selection;
+		}
+
 		/**
 		 * Get Gopay_Gateway_Gateway instance if it exists
 		 * or create a new one.
@@ -788,7 +792,7 @@ function init_gopay_gateway_gateway() {
 						'_input" name="gopay_payment_method" type="radio" id="%s" value="%s" %s />
 					    <span>%s</span>
 					</div>
-					<img src="%s" alt="ico" style="height: auto; width: auto; margin-left: auto;"/>
+					<img src="%s" alt="ico" style="max-height: 60px; height: auto; width: auto; margin-left: auto;"/>
 					</div>';
 
 				foreach ( $payment_methods as $payment_method => $payment_method_label_image ) {
@@ -914,6 +918,13 @@ function init_gopay_gateway_gateway() {
 			// GoPay API only considers cents.
 			// Rounding total to 2 decimals.
 			$order->set_total( wc_format_decimal( $order->get_total(), 2 ) );
+
+			// Try to get Payment method from $_POST or $_Request
+			if (isset($_POST['gopay_payment_method'])) {
+				$gopay_payment_method = sanitize_text_field($_POST['gopay_payment_method']);
+			} elseif (isset($_REQUEST['payment_data']) && isset($_REQUEST['payment_data']['gopay_payment_method'])) {
+				$gopay_payment_method = sanitize_text_field($_REQUEST['payment_data']['gopay_payment_method']);
+			}
 
 			$response = Gopay_Gateway_API::create_payment(
 				$gopay_payment_method,
