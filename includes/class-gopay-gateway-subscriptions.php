@@ -205,12 +205,13 @@ class Gopay_Gateway_Subscriptions {
 	 * @since  1.0.0
 	 */
 	public static function cart_contains_subscription(): bool {
-		foreach ( WC()->cart->get_cart() as $item ) {
-			$product = wc_get_product( $item['product_id'] );
-			if ( class_exists( 'WC_Subscriptions_Product' ) &&
-				WC_Subscriptions_Product::is_subscription( $product ) ) {
-				return true;
-			}
+		// Check if WC function and cart exist
+		if (!function_exists('WC') || is_null(WC()) || is_null(WC()->cart)) {
+			return false;
+		}
+
+		if (class_exists('WC_Subscriptions_Cart')) {
+			return WC_Subscriptions_Cart::cart_contains_subscription();
 		}
 
 		return false;
