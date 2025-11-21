@@ -36,10 +36,10 @@ class Gopay_Gateway_API {
 	 * @since  1.0.0
 	 */
 	public static function auth_gopay( $options ): Payments {
-		static $urls = [
-			true => 'https://gate.gopay.cz/',
-			false => 'https://gw.sandbox.gopay.com/'
-		];
+		static $urls = array(
+			true  => 'https://gate.gopay.cz/',
+			false => 'https://gw.sandbox.gopay.com/',
+		);
 
 		return GoPay\payments(
 			array(
@@ -51,7 +51,7 @@ class Gopay_Gateway_API {
 				'language'         => array_key_exists( 'default_language_gopay_interface', $options ) ?
 					$options['default_language_gopay_interface'] : 'EN',
 				'timeout'          => 30,
-				'gatewayUrl' => $urls[ ! ( 'yes' === $options['test'] ) ]
+				'gatewayUrl'       => $urls[ ! ( 'yes' === $options['test'] ) ],
 			)
 		);
 	}
@@ -190,7 +190,7 @@ class Gopay_Gateway_API {
 
 		$data = array(
 			'payer'             => $payer,
-			'amount'            => wc_format_decimal($order->get_total() * 100, 0),
+			'amount'            => wc_format_decimal( $order->get_total() * 100, 0 ),
 			'currency'          => $order->get_currency(),
 			'order_number'      => $order->get_order_number(),
 			'order_description' => 'order',
@@ -313,37 +313,37 @@ class Gopay_Gateway_API {
 	 * @since  1.0.0
 	 */
 	public static function check_enabled_on_gopay( string $currency ): array {
-		$options = get_option( 'woocommerce_' . GOPAY_GATEWAY_ID . '_settings' );
-		$gopay   = self::auth_gopay( $options );
+		$options       = get_option( 'woocommerce_' . GOPAY_GATEWAY_ID . '_settings' );
+		$gopay         = self::auth_gopay( $options );
 		$site_language = get_locale();
-		$language_code = strstr($site_language, '_', true) ?: $site_language;
+		$language_code = strstr( $site_language, '_', true ) ?: $site_language;
 
-		$reflection = new ReflectionClass(GoPay\Definition\Language::class);
-		$constants = $reflection->getConstants();
-		$is_in_array = in_array(strtoupper($language_code), $constants, true);
-		if ( !$is_in_array ) {
-			$language_code = strtolower(GoPay\Definition\Language::ENGLISH);
+		$reflection  = new ReflectionClass( GoPay\Definition\Language::class );
+		$constants   = $reflection->getConstants();
+		$is_in_array = in_array( strtoupper( $language_code ), $constants, true );
+		if ( ! $is_in_array ) {
+			$language_code = strtolower( GoPay\Definition\Language::ENGLISH );
 		}
 
 		$payment_methods  = array();
 		$banks            = array();
-		$enabled_payments = $gopay->getPaymentInstruments( $options['goid'], $currency . '?lang=' . $language_code);
+		$enabled_payments = $gopay->getPaymentInstruments( $options['goid'], $currency . '?lang=' . $language_code );
 
 		if ( 200 == $enabled_payments->statusCode && isset( $enabled_payments->json['enabledPaymentInstruments'] ) ) {
 			// Determine if the specified language code exists in the response
-			$paymentInstrument = reset($enabled_payments->json['enabledPaymentInstruments']);
-			$language_code = isset($paymentInstrument['label'][$language_code]) ? $language_code : strtolower(GoPay\Definition\Language::CZECH);
+			$paymentInstrument = reset( $enabled_payments->json['enabledPaymentInstruments'] );
+			$language_code     = isset( $paymentInstrument['label'][ $language_code ] ) ? $language_code : strtolower( GoPay\Definition\Language::CZECH );
 
 			foreach ( $enabled_payments->json['enabledPaymentInstruments'] as $key => $payment_method ) {
 				$payment_methods[ $payment_method['paymentInstrument'] ] = array(
-					'label' => $payment_method['label'][$language_code],
+					'label' => $payment_method['label'][ $language_code ],
 					'image' => $payment_method['image']['normal'],
 				);
 
 				if ( 'BANK_ACCOUNT' === $payment_method['paymentInstrument'] ) {
 					foreach ( $payment_method['enabledSwifts'] as $bank ) {
 						$banks[ $bank['swift'] ] = array(
-							'label'   => $bank['label'][$language_code],
+							'label'   => $bank['label'][ $language_code ],
 							'country' => 'OTHERS' !== $bank['swift'] ? substr( $bank['swift'], 4, 2 ) : '',
 							'image'   => $bank['image']['normal'],
 						);
