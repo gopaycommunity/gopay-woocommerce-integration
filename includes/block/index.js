@@ -9,11 +9,21 @@ const settings = getSetting('gopay_data', {});
 
 // Function to check Apple Pay availability
 const checkApplePayAvailability = () => {
-	let applePayAvailable = false;
-	if (window.ApplePaySession && window.ApplePaySession.canMakePayments()) {
-		applePayAvailable = true;
+	try {
+		// Must be secure (HTTPS)
+		if (!window.isSecureContext) {
+			console.warn("Apple Pay requires HTTPS.");
+			return false;
+		}
+
+		if (window.ApplePaySession && ApplePaySession.canMakePayments()) {
+			return true;
+		}
+	} catch (err) {
+		console.error("Apple Pay check failed:", err);
 	}
-	return applePayAvailable;
+
+	return false;
 };
 
 // Function to filter available payment methods
