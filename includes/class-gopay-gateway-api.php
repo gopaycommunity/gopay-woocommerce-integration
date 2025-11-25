@@ -410,7 +410,8 @@ class Gopay_Gateway_API {
 				}
 
 				if ( $all_virtual_downloadable ) {
-					$order->set_status( 'completed' );
+					$transaction_id = $response->json['id'];
+					$order->payment_complete( $transaction_id );
 				} else {
 					$order->set_status( 'processing' );
 				}
