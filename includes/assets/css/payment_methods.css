@@ -61,7 +61,7 @@
 
 .wc-gopay-method-image {
 	max-height: 30px;
-	width: auto;
+	width: max-content;
 	margin-left: 10px;
 }
 
