@@ -648,6 +648,10 @@ class Gopay_Gateway_Options {
 				'label'   => __( 'Toyota Bank', 'gopay-gateway' ),
 				'country' => 'PL',
 			),
+			'GBGCPLPK-BLIK'     => array(
+				'label'   => __( 'Blik', 'gopay-gateway' ),
+				'country' => 'PL',
+			),
 			'OTHERS'       => array(
 				'label'   => __( 'Another bank', 'gopay-gateway' ),
 				'country' => '',
