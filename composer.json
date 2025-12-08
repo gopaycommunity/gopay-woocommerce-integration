@@ -1,12 +1,12 @@
 {
     "require": {
-        "php": ">=7.1",
-        "gopay/payments-sdk-php": "^1.10.1",
-        "guzzlehttp/guzzle": "^7.7.0"
+        "php": ">=8.1",
+        "gopay/payments-sdk-php": "^1.10.4",
+        "guzzlehttp/guzzle": "^7.10.0"
     },
     "require-dev": {
-        "wp-coding-standards/wpcs": "^2.3",
-        "dealerdirect/phpcodesniffer-composer-installer": "^0.7.2"
+        "wp-coding-standards/wpcs": "^3.3.0",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.2.0"
     },
     "config": {
         "allow-plugins": {

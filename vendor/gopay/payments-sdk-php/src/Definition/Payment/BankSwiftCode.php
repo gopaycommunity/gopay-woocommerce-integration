@@ -21,6 +21,9 @@ class BankSwiftCode
     const CREDITAS = 'CTASCZ22';
     const MAX_BANKA = 'EXPNCZPP';
     const JT_BANKA = 'JTBPCZPP';
+    const PARTNERS_BANK = 'PTBNCZPP';
+    const REVOLUT_LT = 'RVUALT2VXXX';
+
     //SK
     const TATRA_BANKA = 'TATRSKBX';
     const VSEOBECNA_UVEROVA_BANKA = 'SUBASKBX';
@@ -40,6 +43,7 @@ class BankSwiftCode
     const BKS_BANK = 'BFKKSKBB';
     const RAIFFEISENBANK_SK = 'TATRSKBXXXX';
     const KOMERCNI_BANKA_SK = 'KOMBSKBA';
+    const BANK365_SK = 'POBNSKBAXXX';
     // PL
     const MBANK1 = 'BREXPLPW';
     const CITI_HANDLOWY = 'CITIPLPX';
@@ -76,4 +80,5 @@ class BankSwiftCode
     const POLSKI_BANK_PRZEDSIEBIORCZOSCI_SPOLKA_AKCYJNA = 'PBPBPLPW';
     // Others
     const SPECIAL = 'OTHERS';
+    const QR_PAYMENT= "QRPAYMENT";
 }
