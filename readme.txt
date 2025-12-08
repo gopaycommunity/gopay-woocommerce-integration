@@ -4,7 +4,7 @@ Tags: WooCommerce, GoPay
 Requires at least: 5.8
 Tested up to: 6.9
 Requires PHP: 8.1
-Stable tag: 1.0.22
+Stable tag: 1.0.23
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -163,5 +163,8 @@ Fix: Block-based checkout issue when using the Local Pickup option; updated read
 * Applied a CSS update to correct the display of payment icons.
 * Added full block-based checkout support for payment methods, based on a contribution by adammaly.
 * Updated the payment handling function for virtual and downloadable products.
-* Added the missing BLINK option within Poland’s bank payment methods.
+* Added the missing BLIK option within Poland’s bank payment methods.
 * Ensured compatibility with the latest WordPress version 6.9.
+
+= 1.0.23 =
+Build: Update Composer dependency set to latest available versions
