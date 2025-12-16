@@ -1095,6 +1095,11 @@ function init_gopay_gateway_gateway() {
 		 * @since  1.0.0
 		 */
 		public function thankyou_page( $message, $order ) {
+			// Order is not created by GoPay
+			if ( ! is_object( $order ) || $this->id !== $order->get_payment_method() ) {
+				return $message;
+			}
+
 			$message      = __( 'Thank you. Your order has been received.', 'gopay-gateway' );
 
 			if ( is_object( $order ) ) {
