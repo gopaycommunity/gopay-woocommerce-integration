@@ -179,7 +179,7 @@ class Gopay_Gateway_API {
 			),
 			array(
 				'name'  => 'gopay_plugin',
-				'value' => 'gopay-woocommerce',
+				'value' => 'gopay-woocommerce-' . GOPAY_WOOCOMMERCE_VERSION,
 			),
 		);
 
