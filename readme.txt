@@ -4,7 +4,7 @@ Tags: WooCommerce, GoPay
 Requires at least: 5.8
 Tested up to: 6.9
 Requires PHP: 8.1
-Stable tag: 1.0.23
+Stable tag: 1.0.24
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -168,3 +168,8 @@ Fix: Block-based checkout issue when using the Local Pickup option; updated read
 
 = 1.0.23 =
 Build: Update Composer dependency set to latest available versions
+
+= 1.0.24 =
+* Minor adjustment in thank you order hook
+* Plugin version added to the API parameters
+* Supports WooCommerce version 10.4.3
