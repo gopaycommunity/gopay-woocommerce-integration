@@ -399,22 +399,8 @@ class Gopay_Gateway_API {
 
 		switch ( $response->json['state'] ) {
 			case 'PAID':
-				// Check if all products are either virtual or downloadable.
-				$all_virtual_downloadable = true;
-				foreach ( $order->get_items() as $item ) {
-					$product = wc_get_product( $item['product_id'] );
-					if ( ! $product->is_virtual() && ! $product->is_downloadable() ) {
-						$all_virtual_downloadable = false;
-						break;
-					}
-				}
-
-				if ( $all_virtual_downloadable ) {
-					$transaction_id = $response->json['id'];
-					$order->payment_complete( $transaction_id );
-				} else {
-					$order->set_status( 'processing' );
-				}
+				$transaction_id = $response->json['id'];
+				$order->payment_complete( $transaction_id );
 
 				// Update retry status.
 				if ( class_exists( 'WCS_Retry_Manager', false ) ) {

@@ -124,12 +124,6 @@ function init_gopay_gateway_gateway() {
 			add_action( 'woocommerce_thankyou', array( $this, 'thankyou_order_failed_text' ), 10, 1 );
 
 			add_filter(
-				'woocommerce_payment_complete_order_status',
-				array( $this, 'complete_order_status' ),
-				10,
-				3
-			);
-			add_filter(
 				'woocommerce_thankyou_order_received_text',
 				array( $this, 'thankyou_page' ),
 				20,
@@ -1146,23 +1140,6 @@ function init_gopay_gateway_gateway() {
 				</script>
 				<?php
 			}
-		}
-
-		/**
-		 * Complete order status for orders.
-		 *
-		 * @param string         $status   Current order status.
-		 * @param int            $order_id Order ID.
-		 * @param WC_Order|false $order    Order object.
-		 *
-		 * @return string
-		 * @since  1.0.0
-		 */
-		public function complete_order_status( string $status, int $order_id, $order = false ): string {
-			if ( $order && GOPAY_GATEWAY_ID === $order->get_payment_method() ) {
-				return 'completed';
-			}
-			return $status;
 		}
 
 		/**
