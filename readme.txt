@@ -4,7 +4,7 @@ Tags: WooCommerce, GoPay
 Requires at least: 5.8
 Tested up to: 6.9
 Requires PHP: 8.1
-Stable tag: 1.0.24
+Stable tag: 1.0.25
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -173,3 +173,7 @@ Build: Update Composer dependency set to latest available versions
 * Minor adjustment in thank you order hook
 * Plugin version added to the API parameters
 * Supports WooCommerce version 10.4.3
+
+= 1.0.25 =
+* Integrate payment_complete method for paid orders
+* Supports latest WooCommerce version 10.5.0
