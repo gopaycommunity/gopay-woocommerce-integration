@@ -50,6 +50,7 @@ function init_gopay_gateway_gateway() {
         private $enable_gopay_payment_methods;
         private $enable_banks;
         private $enable_shipping_methods;
+		private $card_token;
 
 		/**
 		 * Constructor for the gateway
@@ -91,6 +92,7 @@ function init_gopay_gateway_gateway() {
 			$this->enable_gopay_payment_methods = $this->get_option( 'enable_gopay_payment_methods', array() );
 			$this->enable_banks                 = $this->get_option( 'enable_banks', array() );
 			$this->enable_shipping_methods      = $this->get_option( 'enable_shipping_methods', array() );
+			$this->card_token                   = $this->get_option( 'card_token' ) === 'yes';
 
 			$this->supports = array(
 				'subscriptions',
@@ -561,6 +563,23 @@ function init_gopay_gateway_gateway() {
 						'description' => __(
 							'If enabled, payment retry of a failed payment will be done using the same payment method' .
 							' that was selected when customer was placing an order.',
+							'gopay-gateway'
+						),
+						'desc_tip'    => true,
+					),
+					'card_token'                    => array(
+						'title'       => __(
+							'Card token payment',
+							'gopay-gateway'
+						),
+						'type'        => 'checkbox',
+						'label'       => __(
+							'Enable storing credit card for customers',
+							'gopay-gateway'
+						),
+						'description' => __(
+							'When the customer pays with a card, you can request for the card to be saved. In that case, a card token will be generated that you can use for subsequent payments.'.
+							'If you do use it, the customer will not have to input the card details manually.',
 							'gopay-gateway'
 						),
 						'desc_tip'    => true,
