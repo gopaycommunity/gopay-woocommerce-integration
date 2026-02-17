@@ -68,3 +68,71 @@
 .wc-gopay-description {
 	margin-bottom: 15px;
 }
+
+
+.payment_wc_tokenize_container {
+	border-bottom: 1px dashed;
+	padding: 12px;
+}
+
+
+.payment_card_with_tokenize {
+	display: flex;
+}
+
+.card_selection_container {
+	margin-top: 16px;
+	padding-top: 12px;
+	border-top: 1px solid #f1f5f9;
+}
+
+.payment_wc_select_card {
+	display: flex;
+	align-items: center;
+}
+
+.saved_card_select {
+	margin-left: auto;
+	width: 40%;
+	margin-top: 6px;
+	padding: 10px 12px;
+	border-radius: 8px;
+	border: 1px solid #d1d5db;
+	background: #f9fafb;
+	color: #111827;
+	transition: all 0.2s ease;
+	appearance: none;
+	background-image: url("data:image/svg+xml,%3Csvg fill='%236b7280' height='20' viewBox='0 0 20 20' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.94a.75.75 0 111.08 1.04l-4.24 4.5a.75.75 0 01-1.08 0l-4.24-4.5a.75.75 0 01.02-1.06z'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 10px center;
+	background-size: 16px;
+	padding-right: 36px;
+}
+
+.payment_wc_store_token {
+	margin-top: 12px;
+}
+
+
+.payment_wc_store_token label {
+	display: flex;
+	align-items: center;
+	font-size: 14px;
+	color: #374151;
+	cursor: pointer;
+}
+
+@media (max-width: 768px) {
+	.payment_wc_select_card {
+		display: block;
+	}
+
+	.payment_wc_select_card > span {
+		display: block;
+		margin-bottom: 6px;
+	}
+
+	.saved_card_select {
+		width: 100%;
+	}
+}

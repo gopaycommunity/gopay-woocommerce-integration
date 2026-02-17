@@ -100,7 +100,7 @@ class Gopay_Gateway_API {
 	 * @since 1.0.0
 	 */
 	public static function create_payment( ?string $gopay_payment_method, WC_Order $order,
-									string $end_date, $is_retry ): Response {
+									string $end_date, $is_retry, bool $request_card_token ): Response {
 		$options = get_option( 'woocommerce_' . GOPAY_GATEWAY_ID . '_settings' );
 		$gopay   = self::auth_gopay( $options );
 

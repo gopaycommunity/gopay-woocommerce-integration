@@ -834,6 +834,87 @@ function init_gopay_gateway_gateway() {
 					$img  = array_key_exists( 'image', $payment_method_label_image ) ?
 						$payment_method_label_image['image'] : '';
 
+					// Add tokenize section
+					if ( 'PAYMENT_CARD' === $payment_method ) {
+						if ( $this->card_token ) {
+							// Mock saved cards (normally will be fetched from user meta or tokens)
+							$saved_cards = [
+								[
+									'id'    => 'card_1',
+									'brand' => 'Visa',
+									'last4' => '4242',
+									'exp'   => '12/27',
+								],
+								[
+									'id'    => 'card_2',
+									'brand' => 'Mastercard',
+									'last4' => '5454',
+									'exp'   => '03/26',
+								],
+								[
+									'id'    => 'card_3',
+									'brand' => 'Visa',
+									'last4' => '1234',
+									'exp'   => '11/28',
+								],
+							];
+
+							$enabled_payment_methods .= '
+								<div class="payment_wc_tokenize_container" name="' . esc_attr( $payment_method ) . '">
+								<div class="payment_card_with_tokenize">
+									<input 
+										class="payment_method_' . GOPAY_GATEWAY_ID . '_input"
+										name="gopay_payment_method"
+										type="radio"
+										id="' . esc_attr( $payment_method ) . '"
+										value="' . esc_attr( $payment_method ) . '"
+										' . $checked . '
+									/>
+									<span>' . esc_html__( 'Payment card', 'gopay-gateway' ) . '</span>
+									<img src="' . esc_url( $img ) . '" alt="ico" style="max-height: 60px; height: auto; width: auto; margin-left: auto;" />
+								</div>';
+						
+							$enabled_payment_methods .= '
+								<div class="card_selection_container">
+									<div class="payment_wc_select_card">
+									<span>
+										' . __( 'Select payment card', 'gopay-gateway' ) . '
+									</span>
+
+									<select class="saved_card_select" name="saved_card">
+										<option value="new">' . __( 'Use a new payment card', 'gopay-gateway' ) . '</option>';
+
+							foreach ( $saved_cards as $card ) {
+								$enabled_payment_methods .= sprintf(
+									'<option value="%s">%s •••• %s (exp %s)</option>',
+									esc_attr( $card['id'] ),
+									esc_html( $card['brand'] ),
+									esc_html( $card['last4'] ),
+									esc_html( $card['exp'] )
+								);
+							}
+
+							$enabled_payment_methods .= '
+								</select>
+									</div>
+
+									<div class="payment_wc_store_token">
+										<label>
+											<input type="checkbox" id="request_card_token" name="request_card_token" value="1" />
+											' . __( 'Save payment card to my account for future purchases.', 'gopay-gateway' ) . '
+										</label>
+									</div>
+
+								</div>
+
+							</div>
+							';
+
+							$checked = '';
+							continue;
+						}
+					}
+
 					$enabled_payment_methods .= sprintf(
 						$input,
 						$payment_method,
@@ -863,9 +944,18 @@ function init_gopay_gateway_gateway() {
 			</script>
 			<?php
 
-			echo wp_kses( $enabled_payment_methods, array( 'div' => array( 'class' => 1, 'name' => 1 ),
-                'input' => array( 'class' => 1, 'name' => 1, 'type' => 1, 'id' => 1, 'value' => 1, 'checked' => 1 ),
-                'span' => array(), 'img' => array( 'src' => 1, 'alt' => 1, 'style' => 1 ) ) );
+			echo wp_kses(
+				$enabled_payment_methods,
+				array(
+					'div'    => array( 'id' => true, 'class' => true, 'name' => true, 'style' => true ),
+					'input'  => array( 'class' => true, 'name' => true, 'type' => true, 'id' => true, 'value' => true, 'checked' => true ),
+					'span'   => array(),
+					'img'    => array( 'src' => true, 'alt' => true, 'style' => true ),
+					'label'  => array( 'for' => true, 'class' => true, 'style' => true ),
+					'select' => array( 'id' => true, 'name' => true, 'class' => true, 'style' => true ),
+					'option' => array( 'value' => true, 'selected' => true ),
+				)
+			);
 		}
 
 		/**
@@ -918,6 +1008,8 @@ function init_gopay_gateway_gateway() {
 										is_page( wc_get_page_id( 'checkout' ) ) &&
 										! empty( get_query_var( 'order-pay' ) );
 
+			$request_card_token = filter_input( INPUT_POST, 'request_card_token' ) ?? false;
+
 			// Add GoPay payment method to order.
 			if ( $gopay_payment_method ) {
 				if ( array_key_exists( $gopay_payment_method, Gopay_Gateway_Options::supported_banks() ) ) {
@@ -943,7 +1035,8 @@ function init_gopay_gateway_gateway() {
 				$gopay_payment_method,
 				$order,
 				! empty( $subscription ) ? $subscription->get_date( 'end' ) : '',
-				$is_retry
+				$is_retry,
+				$request_card_token
 			);
 
 			if ( 200 != $response->statusCode ) {
@@ -1295,6 +1388,16 @@ function init_gopay_gateway_gateway() {
 				wp_enqueue_script(
 					'gopay-gateway-inline-scripts',
 					'https://gate.gopay.cz/gp-gw/js/embed.js'
+				);
+			}
+
+			if ( is_checkout() ) {
+				wp_enqueue_script(
+					'gopay-checkout-js',
+					plugin_dir_url( __FILE__ ) . 'assets/js/gopay-checkout.js',
+					[ 'jquery' ],
+					'1.0.0',
+					true
 				);
 			}
 		}
