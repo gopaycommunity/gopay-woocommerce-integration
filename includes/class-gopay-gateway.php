@@ -124,6 +124,8 @@ function init_gopay_gateway_gateway() {
 			add_action( 'delete_user', array( $this, 'delete_user_logs' ), 10 );
 			add_action( 'after_delete_post', array( $this, 'delete_order_logs' ), 10, 1 );
 			add_action( 'woocommerce_thankyou', array( $this, 'thankyou_order_failed_text' ), 10, 1 );
+			// AJAX callback
+			add_action('wp_ajax_gopay_delete_card', [$this, 'delete_card_callback']);
 
 			add_filter(
 				'woocommerce_thankyou_order_received_text',
@@ -1400,6 +1402,24 @@ function init_gopay_gateway_gateway() {
 					true
 				);
 			}
+
+			if (is_account_page()) {
+				wp_enqueue_script(
+					'gopay-account-js',
+					plugin_dir_url( __FILE__ ) . 'assets/js/account.js',
+					[ 'jquery' ],
+					'1.0.0',
+					true
+				);
+
+				wp_localize_script(
+					'gopay-account-js',
+					'GoPayCardsAjax',
+					[
+						'ajaxurl' => admin_url('admin-ajax.php')
+					]
+				);
+			}
 		}
 
 		/**
@@ -1438,6 +1458,19 @@ function init_gopay_gateway_gateway() {
 				'DELETE FROM ' . $wpdb->prefix . GOPAY_GATEWAY_LOG_TABLE_NAME . ' WHERE order_id = ' .
 				$order_id
 			);
+		}
+
+		public function delete_card_callback() {
+
+			$card_id = intval($_POST['card_id'] ?? 0);
+			$nonce   = $_POST['nonce'] ?? '';
+
+			if (!wp_verify_nonce($nonce, 'gopay_delete_card')) {
+				wp_send_json_error(['message' => 'Invalid nonce']);
+			}
+
+			// Todo - Delete Card from Database
+			wp_send_json_success(['card_id' => $card_id]);
 		}
 	}
 
