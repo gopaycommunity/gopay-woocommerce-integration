@@ -117,6 +117,20 @@ add_action( 'after_plugin_row_gopay-woocommerce-integration/gopay-gateway.php', 
 
 add_action( 'admin_init', 'gopay_handle_review_dismiss' );
 
+// Register endpoint
+add_action('init', 'gopay_register_endpoint');
+function gopay_register_endpoint() {
+    add_rewrite_endpoint('payment-cards', EP_ROOT | EP_PAGES);
+}
+
+add_action('init', 'gopay_flush_rewrites', 20);
+function gopay_flush_rewrites() {
+    if (!get_option('gopay_rewrite_flushed')) {
+        flush_rewrite_rules();
+        update_option('gopay_rewrite_flushed', 1);
+    }
+}
+
 function gopay_get_review_data() {
 	$defaults = [
 		'count'		=> 0,
