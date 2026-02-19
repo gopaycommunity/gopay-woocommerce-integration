@@ -1,0 +1,150 @@
+.gopay-cards-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+/* Base cell styling */
+.gopay-cards-table th,
+.gopay-cards-table td {
+  padding: 8px;
+}
+
+.gopay-cards-table thead th {
+  border-bottom: 1px solid #ccc;
+  text-align: left;
+}
+
+/* 1 — Brand */
+.gopay-cards-table th:nth-child(1),
+.gopay-cards-table td:nth-child(1) {
+  width: 25%;
+}
+
+/* 2 — Card Number */
+.gopay-cards-table th:nth-child(2),
+.gopay-cards-table td:nth-child(2) {
+  width: 40%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 2px;
+}
+
+.gopay-cards-table th:nth-child(2) {
+  letter-spacing: normal;
+}
+
+/* 3 — Expiry */
+.gopay-cards-table th:nth-child(3),
+.gopay-cards-table td:nth-child(3) {
+  width: 15%;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* 4 — Actions */
+.gopay-cards-table th:nth-child(4),
+.gopay-cards-table td:nth-child(4) {
+  width: 20%;
+  text-align: right;
+}
+
+.gopay-card-number {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.gopay-card-mask {
+  flex-shrink: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gopay-card-last4 {
+  flex: 0 0 auto;
+}
+
+.gopay-delete-confirm span {
+  font-size: 15px;
+}
+
+@media (max-width: 768px) {
+  .gopay-cards-table {
+    border: 0;
+  }
+
+  .gopay-cards-table thead {
+    display: none;
+  }
+
+  .gopay-cards-table,
+  .gopay-cards-table tbody,
+  .gopay-cards-table tr {
+    display: block;
+    width: 100%;
+  }
+
+  .gopay-cards-table tbody td {
+    display: block;
+    width: 100%;
+    position: relative;
+    padding: 8px 0;
+    border: none;
+    text-align: right;
+  }
+
+  .gopay-cards-table tr {
+    margin-bottom: 20px;
+    padding: 0;
+    border: 1px solid #eee;
+    border-radius: 8px;
+  }
+
+  .gopay-cards-table tbody td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 0;
+    font-weight: 600;
+    color: #666;
+    text-align: left;
+    letter-spacing: normal;
+  }
+
+  .gopay-card-number {
+    justify-content: flex-end;
+    white-space: nowrap;
+  }
+
+  .gopay-delete-wrapper {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .gopay-delete-confirm {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  .gopay-cards-table tbody td:nth-child(n) {
+    width: auto;
+    text-align: right;
+    margin: 15px;
+  }
+}
+
+@media (max-width: 400px) {
+  .gopay-card-mask {
+    display: none;
+  }
+
+  .gopay-card-number::before {
+    content: "…****";
+    margin-right: 6px;
+  }
+}

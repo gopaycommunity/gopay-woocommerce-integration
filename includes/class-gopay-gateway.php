@@ -125,7 +125,7 @@ function init_gopay_gateway_gateway() {
 			add_action( 'after_delete_post', array( $this, 'delete_order_logs' ), 10, 1 );
 			add_action( 'woocommerce_thankyou', array( $this, 'thankyou_order_failed_text' ), 10, 1 );
 			// AJAX callback
-			add_action('wp_ajax_gopay_delete_card', [$this, 'delete_card_callback']);
+			add_action( 'wp_ajax_gopay_delete_card', [$this, 'delete_card_callback'] );
 
 			add_filter(
 				'woocommerce_thankyou_order_received_text',
@@ -1360,6 +1360,13 @@ function init_gopay_gateway_gateway() {
 				'gopay-gateway-payment-methods-styles',
 				GOPAY_GATEWAY_URL . 'includes/assets/css/payment_methods.css'
 			);
+
+			wp_enqueue_style(
+				'gopay-gateway-payment-cards-style',
+				GOPAY_GATEWAY_URL . 'includes/assets/css/payment_cards.css',
+				array(),
+				'1.0.0'
+			);
 		}
 
 		/**
@@ -1461,7 +1468,6 @@ function init_gopay_gateway_gateway() {
 		}
 
 		public function delete_card_callback() {
-
 			$card_id = intval($_POST['card_id'] ?? 0);
 			$nonce   = $_POST['nonce'] ?? '';
 
@@ -1487,4 +1493,103 @@ function init_gopay_gateway_gateway() {
 	}
 
 	add_filter( 'woocommerce_payment_gateways', 'add_gopay_gateway' );
+
+	function gopay_add_payment_cards_tab($items) {
+		$new_items = [];
+
+		foreach ($items as $key => $label) {
+			$new_items[$key] = $label;
+
+			if ($key === 'dashboard') {
+				$new_items['payment-cards'] = __('Payment cards', 'gopay-gateway');
+			}
+		}
+
+		return $new_items;
+	}
+
+	add_filter('woocommerce_account_menu_items', 'gopay_add_payment_cards_tab');
+
+	function gopay_payment_cards_content() {
+		echo '<h3>Payment cards</h3>';
+		echo '<p>Here are your saved cards:</p>';
+
+		// Mocked cards for testing
+		$mock_cards = [
+			[
+				'id' => 1,
+				'brand' => 'Visa',
+				'last4' => '4242',
+				'expiry' => '12/27'
+			],
+			[
+				'id' => 2,
+				'brand' => 'Mastercard',
+				'last4' => '5454',
+				'expiry' => '09/26'
+			],
+			[
+				'id' => 3,
+				'brand' => 'Visa',
+				'last4' => '3920',
+				'expiry' => '01/27'
+			]
+		];
+
+		// Nonce for security
+		$nonce = wp_create_nonce('gopay_delete_card');
+
+		echo '<table class="gopay-cards-table">';
+		echo '<thead>';
+		echo '<tr>';
+		echo '<th>Brand</th>';
+		echo '<th>Card number</th>';
+		echo '<th>Expiry</th>';
+		echo '<th>Actions</th>';
+		echo '</tr>';
+		echo '</thead>';
+		echo '<tbody>';
+
+		foreach ($mock_cards as $card) {
+			echo '<tr id="gopay-card-row-' . esc_attr($card['id']) . '">';
+			echo '<td data-label="Brand">' . esc_html($card['brand']) . '</td>';
+			echo '<td data-label="Card number">
+				<div class="gopay-card-number">
+					<span class="gopay-card-mask">**** **** ****</span>
+					<span class="gopay-card-last4">'
+						. esc_html($card['last4']) .
+					'</span>
+				</div>
+			</td>';
+			echo '<td data-label="Expiry">' . esc_html($card['expiry']) . '</td>';
+			echo '<td data-label="Actions">';
+
+			echo '<div class="gopay-delete-wrapper">';
+
+			echo '<button class="gopay-delete-card" 
+					data-card-id="' . esc_attr($card['id']) . '" 
+					data-nonce="' . esc_attr($nonce) . '">
+					Delete
+				</button>';
+
+			echo '<div class="gopay-delete-confirm" style="display:none;">
+					<span>Are you sure?</span>
+					<div>
+						<button class="gopay-confirm-yes" 
+							data-card-id="' . esc_attr($card['id']) . '" 
+							data-nonce="' . esc_attr($nonce) . '">OK</button>
+						<button class="gopay-confirm-cancel">Cancel</button>
+					</div>
+				</div>';
+
+			echo '</div>';
+			echo '</td>';
+			echo '</tr>';
+		}
+
+		echo '</tbody>';
+		echo '</table>';
+	}
+
+	add_action( 'woocommerce_account_payment-cards_endpoint', 'gopay_payment_cards_content' );
 }
