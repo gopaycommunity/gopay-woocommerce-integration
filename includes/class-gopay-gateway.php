@@ -1448,14 +1448,23 @@ function init_gopay_gateway_gateway() {
 		}
 
 		public function delete_card_callback() {
-			$card_id = intval($_POST['card_id'] ?? 0);
+			$card_id = $_POST['card_id'] ?? null;
 			$nonce   = $_POST['nonce'] ?? '';
 
 			if (!wp_verify_nonce($nonce, 'gopay_delete_card')) {
 				wp_send_json_error(['message' => 'Invalid nonce']);
 			}
 
-			// Todo - Delete Card from Database
+			// Delete from GoPay
+			$deleted_from_api = Gopay_Gateway_API::delete_payment_card($card_id);
+
+			// Delete card from Database
+			$deleted_from_db = Gopay_Gateway_Log::delete_customer_card($card_id);
+
+			if ( !$deleted_from_db || !$deleted_from_api ) {
+				wp_send_json_error(['message' => 'Failed to delete card']);
+			}
+
 			wp_send_json_success(['card_id' => $card_id]);
 		}
 	}
@@ -1511,7 +1520,7 @@ function init_gopay_gateway_gateway() {
 		echo '<tbody>';
 
 		foreach ($saved_cards as $card) {
-			echo '<tr id="gopay-card-row-' . esc_attr($card['id']) . '">';
+			echo '<tr id="gopay-card-row-' . esc_attr($card['card_id']) . '">';
 			echo '<td data-label="Brand">' . esc_html($card['card_brand']) . '</td>';
 			echo '<td data-label="Card number">
 				<div class="gopay-card-number">
@@ -1527,7 +1536,7 @@ function init_gopay_gateway_gateway() {
 			echo '<div class="gopay-delete-wrapper">';
 
 			echo '<button class="gopay-delete-card" 
-					data-card-id="' . esc_attr($card['id']) . '" 
+					data-card-id="' . esc_attr($card['card_id']) . '" 
 					data-nonce="' . esc_attr($nonce) . '">
 					Delete
 				</button>';
@@ -1536,7 +1545,7 @@ function init_gopay_gateway_gateway() {
 					<span>Are you sure?</span>
 					<div>
 						<button class="gopay-confirm-yes" 
-							data-card-id="' . esc_attr($card['id']) . '" 
+							data-card-id="' . esc_attr($card['card_id']) . '" 
 							data-nonce="' . esc_attr($nonce) . '">OK</button>
 						<button class="gopay-confirm-cancel">Cancel</button>
 					</div>

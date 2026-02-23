@@ -505,14 +505,25 @@ class Gopay_Gateway_API {
 			try {
 				$card_details = $gopay->getCardDetails( $card->card_id );
 
-				if ( isset($card_details->statusCode) && $card_details->statusCode == 200 ) {
+				if ( isset( $card_details->statusCode ) && $card_details->statusCode == 200 ) {
+
+					$card_number_raw = $card_details->json['card_number'] ?? '';
+					$card_exp_raw    = $card_details->json['card_expiration'] ?? '';
+
+					// Extract last 4 digits safely
+					$card_number = substr( preg_replace('/\D/', '', $card_number_raw ), -4 );
+
+					// Trim whitespace from expiration
+					$card_expiration = str_replace(' ', '', $card_exp_raw);
+
 					$results[] = array(
-						'id'         	   => $card->id,
-						'card_token'       => $card_details->json['card_token'],
-						'card_number'      => $card_details->json['card_number'],
-						'card_brand'       => $card_details->json['card_brand'],
-						'card_expiration'  => $card_details->json['card_expiration'],
-						'status'           => $card_details->json['status']
+						'id'              => $card->id,
+						'card_id'		  => $card->card_id,
+						'card_token'      => $card_details->json['card_token'] ?? '',
+						'card_number'     => $card_number,
+						'card_brand'      => $card_details->json['card_brand'] ?? '',
+						'card_expiration' => $card_expiration,
+						'status'          => $card_details->json['status'] ?? '',
 					);
 				}
 
@@ -522,5 +533,24 @@ class Gopay_Gateway_API {
 		}
 
 		return $results;
+	}
+
+	public static function delete_payment_card($card_id){
+		$options  = get_option( 'woocommerce_' . GOPAY_GATEWAY_ID . '_settings' );
+		$gopay    = self::auth_gopay( $options );
+
+		try {
+			$response = $gopay->deleteCard( $card_id );
+
+			// Check response code for: 2xx
+			if ( isset($response->statusCode) && floor($response->statusCode / 100) == 2 ) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (Exception $e) {
+			error_log("Exception while deleting card " . $e->getMessage());
+			return false;
+		}
 	}
 }
