@@ -839,27 +839,7 @@ function init_gopay_gateway_gateway() {
 					// Add tokenize section
 					if ( 'PAYMENT_CARD' === $payment_method ) {
 						if ( $this->card_token ) {
-							// Mock saved cards (normally will be fetched from user meta or tokens)
-							$saved_cards = [
-								[
-									'id'    => 'card_1',
-									'brand' => 'Visa',
-									'last4' => '4242',
-									'exp'   => '12/27',
-								],
-								[
-									'id'    => 'card_2',
-									'brand' => 'Mastercard',
-									'last4' => '5454',
-									'exp'   => '03/26',
-								],
-								[
-									'id'    => 'card_3',
-									'brand' => 'Visa',
-									'last4' => '1234',
-									'exp'   => '11/28',
-								],
-							];
+							$saved_cards = Gopay_Gateway_API::get_card_details();
 
 							$enabled_payment_methods .= '
 								<div class="payment_wc_tokenize_container" name="' . esc_attr( $payment_method ) . '">
@@ -890,9 +870,9 @@ function init_gopay_gateway_gateway() {
 								$enabled_payment_methods .= sprintf(
 									'<option value="%s">%s •••• %s (exp %s)</option>',
 									esc_attr( $card['id'] ),
-									esc_html( $card['brand'] ),
-									esc_html( $card['last4'] ),
-									esc_html( $card['exp'] )
+									esc_html( $card['card_brand'] ),
+									esc_html( $card['card_number'] ),
+									esc_html( $card['card_expiration'] )
 								);
 							}
 
@@ -1514,27 +1494,7 @@ function init_gopay_gateway_gateway() {
 		echo '<h3>Payment cards</h3>';
 		echo '<p>Here are your saved cards:</p>';
 
-		// Mocked cards for testing
-		$mock_cards = [
-			[
-				'id' => 1,
-				'brand' => 'Visa',
-				'last4' => '4242',
-				'expiry' => '12/27'
-			],
-			[
-				'id' => 2,
-				'brand' => 'Mastercard',
-				'last4' => '5454',
-				'expiry' => '09/26'
-			],
-			[
-				'id' => 3,
-				'brand' => 'Visa',
-				'last4' => '3920',
-				'expiry' => '01/27'
-			]
-		];
+		$saved_cards = Gopay_Gateway_API::get_card_details();
 
 		// Nonce for security
 		$nonce = wp_create_nonce('gopay_delete_card');
@@ -1550,18 +1510,18 @@ function init_gopay_gateway_gateway() {
 		echo '</thead>';
 		echo '<tbody>';
 
-		foreach ($mock_cards as $card) {
+		foreach ($saved_cards as $card) {
 			echo '<tr id="gopay-card-row-' . esc_attr($card['id']) . '">';
-			echo '<td data-label="Brand">' . esc_html($card['brand']) . '</td>';
+			echo '<td data-label="Brand">' . esc_html($card['card_brand']) . '</td>';
 			echo '<td data-label="Card number">
 				<div class="gopay-card-number">
 					<span class="gopay-card-mask">**** **** ****</span>
 					<span class="gopay-card-last4">'
-						. esc_html($card['last4']) .
+						. esc_html($card['card_number']) .
 					'</span>
 				</div>
 			</td>';
-			echo '<td data-label="Expiry">' . esc_html($card['expiry']) . '</td>';
+			echo '<td data-label="Expiry">' . esc_html($card['card_expiration']) . '</td>';
 			echo '<td data-label="Actions">';
 
 			echo '<div class="gopay-delete-wrapper">';
