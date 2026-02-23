@@ -45,6 +45,7 @@ define('GOPAY_GATEWAY_DIR', plugin_dir_path(__FILE__));
 define('GOPAY_GATEWAY_BASENAME', plugin_basename(__FILE__));
 define('GOPAY_GATEWAY_BASENAME_DIR', dirname(plugin_basename(__FILE__)));
 define('GOPAY_GATEWAY_LOG_TABLE_NAME', 'gopay_gateway_log');
+define('GOPAY_GATEWAY_TABLE_CARDS', 'gopay_gateway_payment_cards');
 
 // Check requirements.
 require GOPAY_GATEWAY_DIR .
@@ -130,6 +131,8 @@ function gopay_flush_rewrites() {
         update_option('gopay_rewrite_flushed', 1);
     }
 }
+
+add_action('init', ['Gopay_Gateway_Log', 'update_database']);
 
 function gopay_get_review_data() {
 	$defaults = [
