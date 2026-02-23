@@ -471,4 +471,56 @@ class Gopay_Gateway_API {
 
 		return $response;
 	}
+
+	public static function get_card_details() {
+		global $wpdb;
+		$table_name = $wpdb->prefix . GOPAY_GATEWAY_TABLE_CARDS;
+
+		// Authenticate GoPay
+		$options  = get_option( 'woocommerce_' . GOPAY_GATEWAY_ID . '_settings' );
+		$gopay    = self::auth_gopay( $options );
+
+		// Check if user is logged in
+		if ( ! is_user_logged_in() ) {
+			return false;
+		}
+
+		$user_id = get_current_user_id();
+
+		// Get saved cards for current user
+		$cards = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT id, card_id FROM {$table_name} WHERE user_id = %d",
+				$user_id
+			)
+		);
+
+		if ( empty($cards) ) {
+			return [];
+		}
+
+		$results = array();
+
+		foreach ( $cards as $card ) {
+			try {
+				$card_details = $gopay->getCardDetails( $card->card_id );
+
+				if ( isset($card_details->statusCode) && $card_details->statusCode == 200 ) {
+					$results[] = array(
+						'id'         	   => $card->id,
+						'card_token'       => $card_details->json['card_token'],
+						'card_number'      => $card_details->json['card_number'],
+						'card_brand'       => $card_details->json['card_brand'],
+						'card_expiration'  => $card_details->json['card_expiration'],
+						'status'           => $card_details->json['status']
+					);
+				}
+
+			} catch ( Exception $e ) {
+				error_log("Exception fetching card " . $e->getMessage());
+			}
+		}
+
+		return $results;
+	}
 }
