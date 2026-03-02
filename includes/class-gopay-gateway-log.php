@@ -95,6 +95,17 @@ class Gopay_Gateway_Log {
 		global $wpdb;
 		$table_name = $wpdb->prefix . GOPAY_GATEWAY_TABLE_CARDS;
 
+		$exists = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM {$table_name} WHERE card_id = %s",
+				$card_id
+			)
+		);
+
+		if ( $exists > 0 ) {
+			return false; // card already exits
+		}
+
 		$inserted = $wpdb->insert(
 			$table_name,
 			array(
@@ -104,10 +115,11 @@ class Gopay_Gateway_Log {
 			)
 		);
 
-		if ($inserted) {
-			return $wpdb->insert_id; // return inserted row ID
+		if ( $inserted ) {
+			return $wpdb->insert_id;
 		}
 
+		error_log("Failed to insert card {$card_id} for user {$user_id}. WPDB error: " . $wpdb->last_error);
 		return false;
 	}
 
