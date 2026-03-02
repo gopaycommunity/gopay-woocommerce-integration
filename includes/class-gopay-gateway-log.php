@@ -116,7 +116,7 @@ class Gopay_Gateway_Log {
 		);
 
 		if ( $inserted ) {
-			return $wpdb->insert_id;
+			return true;
 		}
 
 		error_log("Failed to insert card {$card_id} for user {$user_id}. WPDB error: " . $wpdb->last_error);

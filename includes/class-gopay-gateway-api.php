@@ -100,7 +100,7 @@ class Gopay_Gateway_API {
 	 * @since 1.0.0
 	 */
 	public static function create_payment( ?string $gopay_payment_method, WC_Order $order,
-									string $end_date, $is_retry, bool $request_card_token ): Response {
+									string $end_date, $is_retry, bool $request_card_token, string $card_id ): Response {
 		$options = get_option( 'woocommerce_' . GOPAY_GATEWAY_ID . '_settings' );
 		$gopay   = self::auth_gopay( $options );
 
@@ -160,6 +160,26 @@ class Gopay_Gateway_API {
 				'allowed_swifts'              => ! empty( $options['enable_banks'] ) ? $options['enable_banks'] : array(),
 				'contact'                     => $contact,
 			);
+
+			// If card tokenization is requested
+			if ( isset( $request_card_token ) && true === $request_card_token ) {
+				$payer['request_card_token'] = true;
+			}
+
+			// Pay with already saved card
+			if ( ! empty( $card_id ) && $card_id !== 'new' ) {
+				$enabled_methods = $options['enable_gopay_payment_methods'] ?? array();
+
+				if ( is_array( $enabled_methods ) && in_array( 'PAYMENT_CARD', $enabled_methods, true ) ) {
+
+					$card_details = $gopay->getCardDetails($card_id);
+
+					if ( isset( $card_details->statusCode ) && $card_details->statusCode == 200 ) {
+						$payer['allowed_payment_instruments'] = ["PAYMENT_CARD"];
+						$payer['allowed_card_token'] = $card_details->json['card_token'];
+					}
+				}
+			}
 
 			if ( ! empty( $default_swift ) ) {
 				$payer['default_swift'] = $default_swift;
@@ -414,6 +434,23 @@ class Gopay_Gateway_API {
 
 				$order->save();
 				wp_safe_redirect( $order->get_checkout_order_received_url() );
+
+				$card_id = $response->json['payer']['card_id'] ?? null;
+
+				if ( $card_id ) {
+					// Fetch card details
+					$card_details = $gopay->getCardDetails($card_id);
+
+					if ( isset($card_details->statusCode) && $card_details->statusCode == 200 ) {
+						$user_id = get_current_user_id();
+
+						$insert_id = Gopay_Gateway_Log::insert_saved_card($user_id,$card_id);
+
+						if ( ! $insert_id ) {
+							error_log("Error while storing card for user: {$user_id}");
+						}
+					}
+				}
 
 				break;
 			case 'PAYMENT_METHOD_CHOSEN':

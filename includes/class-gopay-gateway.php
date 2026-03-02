@@ -863,13 +863,13 @@ function init_gopay_gateway_gateway() {
 										' . __( 'Select payment card', 'gopay-gateway' ) . '
 									</span>
 
-									<select class="saved_card_select" name="saved_card">
+									<select class="saved_card_select" id="saved_card" name="saved_card">
 										<option value="new">' . __( 'Use a new payment card', 'gopay-gateway' ) . '</option>';
 
 							foreach ( $saved_cards as $card ) {
 								$enabled_payment_methods .= sprintf(
 									'<option value="%s">%s •••• %s (exp %s)</option>',
-									esc_attr( $card['id'] ),
+									esc_attr( $card['card_id'] ),
 									esc_html( $card['card_brand'] ),
 									esc_html( $card['card_number'] ),
 									esc_html( $card['card_expiration'] )
@@ -991,6 +991,7 @@ function init_gopay_gateway_gateway() {
 										! empty( get_query_var( 'order-pay' ) );
 
 			$request_card_token = filter_input( INPUT_POST, 'request_card_token' ) ?? false;
+			$card_id = filter_input( INPUT_POST, 'saved_card' ) ?? '';
 
 			// Add GoPay payment method to order.
 			if ( $gopay_payment_method ) {
@@ -1018,7 +1019,8 @@ function init_gopay_gateway_gateway() {
 				$order,
 				! empty( $subscription ) ? $subscription->get_date( 'end' ) : '',
 				$is_retry,
-				$request_card_token
+				$request_card_token,
+				$card_id
 			);
 
 			if ( 200 != $response->statusCode ) {
