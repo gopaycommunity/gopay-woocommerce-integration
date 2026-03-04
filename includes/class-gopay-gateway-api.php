@@ -511,16 +511,17 @@ class Gopay_Gateway_API {
 
 	public static function get_card_details() {
 		global $wpdb;
+
+		// Check if user is logged in
+		if ( ! is_user_logged_in() ) {
+			return array();
+		}
+
 		$table_name = $wpdb->prefix . GOPAY_GATEWAY_TABLE_CARDS;
 
 		// Authenticate GoPay
 		$options  = get_option( 'woocommerce_' . GOPAY_GATEWAY_ID . '_settings' );
 		$gopay    = self::auth_gopay( $options );
-
-		// Check if user is logged in
-		if ( ! is_user_logged_in() ) {
-			return false;
-		}
 
 		$user_id = get_current_user_id();
 
@@ -533,7 +534,7 @@ class Gopay_Gateway_API {
 		);
 
 		if ( empty($cards) ) {
-			return [];
+			return array();
 		}
 
 		$results = array();

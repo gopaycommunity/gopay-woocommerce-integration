@@ -121,6 +121,7 @@ final class WC_Gopay_Blocks_Support extends AbstractPaymentMethodType {
 			'supports' => $this->get_supported_features(),
 			'paymentMethods' => $payment_methods_output,
 			'savedCards' => $saved_cards,
+			'isLoggedIn' => is_user_logged_in(),
 		];
 	}
 }

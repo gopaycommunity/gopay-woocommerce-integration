@@ -116,10 +116,10 @@ const GoPayMethodSelection = (props) => {
 							className: 'wc-gopay-method-image',
 						})
 					),
-					(settings.savedCards && settings.savedCards.length > 0) ? method.id === 'PAYMENT_CARD' && selectedMethod === 'PAYMENT_CARD' && createElement('div', { className: 'wc-gopay-card-selection' },
+					method.id === 'PAYMENT_CARD' && selectedMethod === 'PAYMENT_CARD' && settings.isLoggedIn ? createElement('div', { className: 'wc-gopay-card-selection' },
 						createElement('div', { className: 'card_selection_container' },
 
-							createElement('div', { className: 'payment_wc_select_card' },
+							(settings.savedCards && settings.savedCards.length > 0) ? createElement('div', { className: 'payment_wc_select_card' },
 								createElement('span', {}, __('Select payment card', 'gopay-gateway')),
 								createElement('select', {
 									className: 'saved_card_select',
@@ -133,7 +133,7 @@ const GoPayMethodSelection = (props) => {
 										createElement('option', { key: card.card_id, value: card.card_id }, `${card.card_brand} ****${card.card_number} (${card.card_expiration})`)
 									)
 								),
-							),
+							) : null,
 
 							createElement('div', { className: 'payment_wc_store_token' },
 								createElement('input', {
