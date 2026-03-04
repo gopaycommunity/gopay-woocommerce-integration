@@ -885,12 +885,9 @@ function init_gopay_gateway_gateway() {
 									</div>
 
 									<div class="payment_wc_store_token">
-										<label>
-											<input type="checkbox" id="request_card_token" name="request_card_token" value="1" />
-											' . __( 'Save payment card to my account for future purchases.', 'gopay-gateway' ) . '
-										</label>
+										<input type="checkbox" id="request_card_token" name="request_card_token" value="1" />
+										<label for="request_card_token">'. __( 'Save payment card to my account for future purchases.', 'gopay-gateway' ) . '</label>
 									</div>
-
 								</div>
 
 							</div>
@@ -1016,6 +1013,14 @@ function init_gopay_gateway_gateway() {
 				$gopay_payment_method = sanitize_text_field($_POST['gopay_payment_method']);
 			} elseif (isset($_REQUEST['payment_data']) && isset($_REQUEST['payment_data']['gopay_payment_method'])) {
 				$gopay_payment_method = sanitize_text_field($_REQUEST['payment_data']['gopay_payment_method']);
+			}
+
+			if (isset($_POST['saved_card'])) {
+				$card_id = sanitize_text_field($_POST['saved_card']);
+			}
+
+			if (isset($_POST['request_card_token'])) {
+				$request_card_token = sanitize_text_field($_POST['request_card_token']);
 			}
 
 			$response = Gopay_Gateway_API::create_payment(
