@@ -575,8 +575,12 @@ function init_gopay_gateway_gateway() {
 							'gopay-gateway'
 						),
 						'type'        => 'checkbox',
-						'label'       => __(
-							'Enable storing credit card for customers',
+						'label' 	  => __(
+							'Enable storing credit cards for customers<br>
+							<div style="color:#b32d2e;font-weight:600;">
+							⚠ Enable this option only if card tokenization is activated for your GoPay merchant account. </div>
+							<div style="color:#b32d2e;font-weight:600;">If your account does not support this feature, checkout may fail and payments may become unavailable.</div>
+							',
 							'gopay-gateway'
 						),
 						'description' => __(
