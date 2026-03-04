@@ -54,6 +54,9 @@ final class WC_Gopay_Blocks_Support extends AbstractPaymentMethodType {
 	public function get_payment_method_data(){
 		$payment_methods_output = [];
 
+		// Get users stored cards from API
+		$saved_cards = Gopay_Gateway_API::get_card_details();
+
 		// Only supported by the currency.
 		$supported_payment_methods = $this->gateway->get_option(
 			'gopay_payment_methods_' . get_woocommerce_currency(),
@@ -117,6 +120,7 @@ final class WC_Gopay_Blocks_Support extends AbstractPaymentMethodType {
 			'description' => $this->get_setting('description'),
 			'supports' => $this->get_supported_features(),
 			'paymentMethods' => $payment_methods_output,
+			'savedCards' => $saved_cards,
 		];
 	}
 }

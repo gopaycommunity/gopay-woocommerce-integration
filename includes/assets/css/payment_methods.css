@@ -8,7 +8,7 @@
 	overflow: hidden;
 }
 
-.woocommerce #payment .payment_methods.methods label[for="payment_method_wc_gopay_gateway"] img{
+.woocommerce #payment .payment_methods.methods label[for="payment_method_wc_gopay_gateway"] img {
 	height: auto;
 	width: auto;
 	margin-left: auto;
@@ -111,6 +111,9 @@
 
 .payment_wc_store_token {
 	margin-top: 12px;
+	display: flex;
+	align-items: center;
+	gap: 7px;
 }
 
 
@@ -120,6 +123,7 @@
 	font-size: 14px;
 	color: #374151;
 	cursor: pointer;
+	margin-bottom: 0;
 }
 
 @media (max-width: 768px) {
@@ -127,7 +131,7 @@
 		display: block;
 	}
 
-	.payment_wc_select_card > span {
+	.payment_wc_select_card>span {
 		display: block;
 		margin-bottom: 6px;
 	}
