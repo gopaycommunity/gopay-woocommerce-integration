@@ -1,27 +1,27 @@
 jQuery(function ($) {
 
     // Show confirmation
-    $(document).on('click', '.gopay-delete-card', function (e) {
+    $(document).on('click', '#gopay-delete-card', function (e) {
         e.preventDefault();
 
-        var wrapper = $(this).closest('.gopay-delete-wrapper');
+        var wrapper = $(this).closest('#gopay-delete-wrapper');
 
-        wrapper.find('.gopay-delete-card').hide();
-        wrapper.find('.gopay-delete-confirm').fadeIn(150);
+        wrapper.find('#gopay-delete-card').hide();
+        wrapper.find('#gopay-delete-confirm').fadeIn(150);
     });
 
     // Cancel delete
-    $(document).on('click', '.gopay-confirm-cancel', function (e) {
+    $(document).on('click', '#gopay-confirm-cancel', function (e) {
         e.preventDefault();
 
-        var wrapper = $(this).closest('.gopay-delete-wrapper');
+        var wrapper = $(this).closest('#gopay-delete-wrapper');
 
-        wrapper.find('.gopay-delete-confirm').hide();
-        wrapper.find('.gopay-delete-card').fadeIn(150);
+        wrapper.find('#gopay-delete-confirm').hide();
+        wrapper.find('#gopay-delete-card').fadeIn(150);
     });
 
     // Confirm delete using AJAX request
-    $(document).on('click', '.gopay-confirm-yes', function (e) {
+    $(document).on('click', '#gopay-confirm-yes', function (e) {
         e.preventDefault();
 
         var button = $(this);

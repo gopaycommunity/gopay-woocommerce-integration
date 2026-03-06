@@ -1549,21 +1549,21 @@ function init_gopay_gateway_gateway() {
 			echo '<td data-label="Expiry">' . esc_html($card['card_expiration']) . '</td>';
 			echo '<td data-label="Actions">';
 
-			echo '<div class="gopay-delete-wrapper">';
+			echo '<div id="gopay-delete-wrapper" class="gopay-delete-wrapper">';
 
-			echo '<button class="gopay-delete-card" 
+			echo '<button id="gopay-delete-card" class="gopay-delete-card" 
 					data-card-id="' . esc_attr($card['card_id']) . '" 
 					data-nonce="' . esc_attr($nonce) . '">
 					Delete
 				</button>';
 
-			echo '<div class="gopay-delete-confirm" style="display:none;">
+			echo '<div id="gopay-delete-confirm" class="gopay-delete-confirm" style="display:none;">
 					<span>Are you sure?</span>
 					<div>
-						<button class="gopay-confirm-yes" 
+						<button id="gopay-confirm-yes" class="gopay-confirm-yes" 
 							data-card-id="' . esc_attr($card['card_id']) . '" 
 							data-nonce="' . esc_attr($nonce) . '">OK</button>
-						<button class="gopay-confirm-cancel">Cancel</button>
+						<button id="gopay-confirm-cancel" class="gopay-confirm-cancel">Cancel</button>
 					</div>
 				</div>';
 
