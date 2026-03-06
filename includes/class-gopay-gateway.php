@@ -811,7 +811,7 @@ function init_gopay_gateway_gateway() {
 						'_input" name="gopay_payment_method" type="radio" id="%s" value="%s" %s />
 					    <span>%s</span>
 					</div>
-					<img src="%s" alt="ico" style="max-height: 60px; height: auto; width: auto; margin-left: auto;"/>
+					<img src="%s" alt="ico" style="max-height: 60px; height: fit-content; width: auto; margin-left: auto;"/>
 					</div>';
 
 				foreach ( $payment_methods as $payment_method => $payment_method_label_image ) {
@@ -842,7 +842,7 @@ function init_gopay_gateway_gateway() {
 
 					// Add tokenize section
 					if ( 'PAYMENT_CARD' === $payment_method ) {
-						if ( $this->card_token ) {
+						if ( $this->card_token && is_user_logged_in() ) {
 							$saved_cards = Gopay_Gateway_API::get_card_details();
 
 							$enabled_payment_methods .= '
@@ -861,30 +861,35 @@ function init_gopay_gateway_gateway() {
 								</div>';
 						
 							$enabled_payment_methods .= '
-								<div class="card_selection_container">
-									<div class="payment_wc_select_card">
+								<div class="card_selection_container" id="card_selection_container">';
+
+							if ( ! empty( $saved_cards ) ) {
+								$enabled_payment_methods .= '
+									<div class="payment_wc_select_card" id="payment_wc_select_card">
 									<span>
 										' . __( 'Select payment card', 'gopay-gateway' ) . '
 									</span>
 
 									<select class="saved_card_select" id="saved_card" name="saved_card">
-										<option value="new">' . __( 'Use a new payment card', 'gopay-gateway' ) . '</option>';
+										<option value="new">' . __( 'New Card', 'gopay-gateway' ) . '</option>';
 
-							foreach ( $saved_cards as $card ) {
-								$enabled_payment_methods .= sprintf(
-									'<option value="%s">%s •••• %s (exp %s)</option>',
-									esc_attr( $card['card_id'] ),
-									esc_html( $card['card_brand'] ),
-									esc_html( $card['card_number'] ),
-									esc_html( $card['card_expiration'] )
-								);
+								foreach ( $saved_cards as $card ) {
+									$enabled_payment_methods .= sprintf(
+										'<option value="%s">%s •••• %s (exp %s)</option>',
+										esc_attr( $card['card_id'] ),
+										esc_html( $card['card_brand'] ),
+										esc_html( $card['card_number'] ),
+										esc_html( $card['card_expiration'] )
+									);
+								}
+
+								$enabled_payment_methods .= '
+									</select>
+									</div>';
 							}
 
 							$enabled_payment_methods .= '
-								</select>
-									</div>
-
-									<div class="payment_wc_store_token">
+									<div class="payment_wc_store_token" id="payment_wc_store_token">
 										<input type="checkbox" id="request_card_token" name="request_card_token" value="1" />
 										<label for="request_card_token">'. __( 'Save payment card to my account for future purchases.', 'gopay-gateway' ) . '</label>
 									</div>

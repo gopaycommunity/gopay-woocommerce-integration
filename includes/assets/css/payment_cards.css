@@ -72,6 +72,10 @@
   font-size: 15px;
 }
 
+.gopay-delete-wrapper button {
+  padding: 0px 7px;
+}
+
 @media (max-width: 768px) {
   .gopay-cards-table {
     border: 0;

@@ -91,6 +91,14 @@
 	align-items: center;
 }
 
+.payment_wc_select_card.compact-layout {
+	display: block;
+}
+
+.payment_wc_select_card.compact-layout>select {
+	width: fit-content;
+}
+
 .saved_card_select {
 	margin-left: auto;
 	width: 40%;

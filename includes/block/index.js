@@ -117,14 +117,14 @@ const GoPayMethodSelection = (props) => {
 						})
 					),
 					method.id === 'PAYMENT_CARD' && selectedMethod === 'PAYMENT_CARD' && settings.isLoggedIn ? createElement('div', { className: 'wc-gopay-card-selection' },
-						createElement('div', { className: 'card_selection_container' },
+						createElement('div', { className: 'card_selection_container', id: 'card_selection_container' },
 
 							(settings.savedCards && settings.savedCards.length > 0) ? createElement('div', { className: 'payment_wc_select_card' },
 								createElement('span', {}, __('Select payment card', 'gopay-gateway')),
 								createElement('select', {
 									className: 'saved_card_select',
-									id: "saved_card",
-									name: "saved_card",
+									id: 'saved_card',
+									name: 'saved_card',
 									value: selectedCard,
 									onChange: (e) => setSelectedCard(e.target.value)
 								},
@@ -135,15 +135,15 @@ const GoPayMethodSelection = (props) => {
 								),
 							) : null,
 
-							createElement('div', { className: 'payment_wc_store_token' },
+							createElement('div', { className: 'payment_wc_store_token', id: 'payment_wc_store_token' },
 								createElement('input', {
 									type: 'checkbox',
-									id: "request_card_token",
-									name: "request_card_token",
+									id: 'request_card_token',
+									name: 'request_card_token',
 									checked: requestCardToken,
 									onChange: (e) => setRequestCardToken(e.target.checked)
 								}),
-								createElement('label', { htmlFor: "request_card_token" }, __('Save payment card to my account for future purchases.', 'gopay-gateway')),
+								createElement('label', { htmlFor: 'request_card_token' }, __('Save payment card to my account for future purchases.', 'gopay-gateway')),
 							),
 						)
 					) : null
