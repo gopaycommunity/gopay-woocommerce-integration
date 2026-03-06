@@ -443,12 +443,7 @@ class Gopay_Gateway_API {
 
 					if ( isset($card_details->statusCode) && $card_details->statusCode == 200 ) {
 						$user_id = get_current_user_id();
-
-						$insert_id = Gopay_Gateway_Log::insert_saved_card($user_id,$card_id);
-
-						if ( ! $insert_id ) {
-							error_log("Error while storing card for user: {$user_id}");
-						}
+						Gopay_Gateway_Log::insert_saved_card($user_id,$card_id);
 					}
 				}
 
@@ -557,11 +552,9 @@ class Gopay_Gateway_API {
 					$results[] = array(
 						'id'              => $card->id,
 						'card_id'		  => $card->card_id,
-						'card_token'      => $card_details->json['card_token'] ?? '',
 						'card_number'     => $card_number,
 						'card_brand'      => $card_details->json['card_brand'] ?? '',
 						'card_expiration' => $card_expiration,
-						'status'          => $card_details->json['status'] ?? '',
 					);
 				}
 

@@ -84,6 +84,7 @@ class Gopay_Gateway_Log {
 			card_id VARCHAR(50) NOT NULL,
 			created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 			PRIMARY KEY (id),
+			UNIQUE KEY unique_user_card (user_id, card_id),
 			KEY user_id (user_id)
 		) $charset_collate;";
 
@@ -97,16 +98,17 @@ class Gopay_Gateway_Log {
 
 		$exists = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT COUNT(*) FROM {$table_name} WHERE card_id = %s",
+				"SELECT COUNT(*) FROM {$table_name} WHERE user_id = %d AND card_id = %s",
+				$user_id,
 				$card_id
 			)
 		);
 
 		if ( $exists > 0 ) {
-			return false; // card already exits
+			return;
 		}
 
-		$inserted = $wpdb->insert(
+		$wpdb->insert(
 			$table_name,
 			array(
 				'user_id'    => $user_id,
@@ -114,13 +116,6 @@ class Gopay_Gateway_Log {
 				'created_at' => current_time('mysql'),
 			)
 		);
-
-		if ( $inserted ) {
-			return true;
-		}
-
-		error_log("Failed to insert card {$card_id} for user {$user_id}. WPDB error: " . $wpdb->last_error);
-		return false;
 	}
 
 	public static function delete_customer_card($card_id) {
