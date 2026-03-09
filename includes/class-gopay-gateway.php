@@ -1354,7 +1354,9 @@ function init_gopay_gateway_gateway() {
 		public function enqueue_styles() {
 			wp_enqueue_style(
 				'gopay-gateway-payment-methods-styles',
-				GOPAY_GATEWAY_URL . 'includes/assets/css/payment_methods.css'
+				GOPAY_GATEWAY_URL . 'includes/assets/css/payment_methods.css',
+				array(),
+				'1.0.0'
 			);
 
 			wp_enqueue_style(
