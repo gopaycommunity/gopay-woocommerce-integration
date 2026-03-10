@@ -1477,16 +1477,27 @@ function init_gopay_gateway_gateway() {
 			}
 
 			// Delete from GoPay
-			$deleted_from_api = Gopay_Gateway_API::delete_payment_card($card_id);
+			$response = Gopay_Gateway_API::delete_payment_card($card_id);
 
-			// Delete card from Database
-			$deleted_from_db = Gopay_Gateway_Log::delete_customer_card($card_id);
-
-			if ( !$deleted_from_db || !$deleted_from_api ) {
-				wp_send_json_error(['message' => 'Failed to delete card']);
+			if ( ! $response ) {
+				wp_send_json_error(['message' => 'Failed to connect to GoPay. Please try again.']);
 			}
 
-			wp_send_json_success(['card_id' => $card_id]);
+			// GoPay SDK Response status 2xx or 404
+			$is_success = floor($response->statusCode / 100) == 2 || $response->statusCode == 404;
+
+			if ( $is_success ) {
+				$deleted_from_db = Gopay_Gateway_Log::delete_customer_card(get_current_user_id(), $card_id);
+
+				if ( ! $deleted_from_db ) {
+					wp_send_json_error(['message' => 'Card deleted from GoPay, but database update failed.']);
+				}
+
+				wp_send_json_success(['card_id' => $card_id]);
+			} else {
+				$error_msg = $response->json['errors'][0]['message'] ?? 'Failed to delete card from GoPay.';
+				wp_send_json_error(['message' => $error_msg]);
+			}
 		}
 
 		public function check_payment_cards_access() {

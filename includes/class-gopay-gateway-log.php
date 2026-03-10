@@ -114,11 +114,16 @@ class Gopay_Gateway_Log {
 				'user_id'    => $user_id,
 				'card_id'    => $card_id,
 				'created_at' => current_time('mysql'),
+			),
+			array(
+				'%d',
+				'%s',
+				'%s',
 			)
 		);
 	}
 
-	public static function delete_customer_card($card_id) {
+	public static function delete_customer_card($user_id, $card_id) {
 		global $wpdb;
 		$table_name = $wpdb->prefix . GOPAY_GATEWAY_TABLE_CARDS;
 
@@ -128,7 +133,8 @@ class Gopay_Gateway_Log {
 
 		$deleted = $wpdb->delete(
 			$table_name,
-			['card_id' => $card_id],
+			['user_id' => $user_id, 'card_id' => $card_id],
+			['%d', '%s']
 		);
 
 		return (bool) $deleted;

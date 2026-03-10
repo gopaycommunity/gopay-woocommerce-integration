@@ -559,29 +559,21 @@ class Gopay_Gateway_API {
 				}
 
 			} catch ( Exception $e ) {
-				error_log("Exception fetching card " . $e->getMessage());
+				return array();
 			}
 		}
 
 		return $results;
 	}
 
-	public static function delete_payment_card($card_id){
+	public static function delete_payment_card($card_id) {
 		$options  = get_option( 'woocommerce_' . GOPAY_GATEWAY_ID . '_settings' );
 		$gopay    = self::auth_gopay( $options );
 
 		try {
-			$response = $gopay->deleteCard( $card_id );
-
-			// Check response code for: 2xx
-			if ( isset($response->statusCode) && floor($response->statusCode / 100) == 2 ) {
-				return true;
-			} else {
-				return false;
-			}
+			return $gopay->deleteCard( $card_id );
 		} catch (Exception $e) {
-			error_log("Exception while deleting card " . $e->getMessage());
-			return false;
+			return null;
 		}
 	}
 }
