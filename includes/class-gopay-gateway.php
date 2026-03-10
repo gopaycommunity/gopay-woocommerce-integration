@@ -110,6 +110,7 @@ function init_gopay_gateway_gateway() {
 			add_action( 'admin_init', array( $this, 'update_payment_methods' ), 1 );
 			add_action( 'update_payment_methods_and_banks', array( $this, 'check_enabled_on_gopay' ), 1 );
 			add_action( 'template_redirect', array( $this, 'check_status_gopay_redirect' ) );
+			add_action( 'template_redirect', array( $this, 'check_payment_cards_access' ) );
 			add_action( 'woocommerce_create_refund', array( $this, 'calculate_refund_amount' ), 10, 2 );
 			add_action(
 				'woocommerce_update_options_payment_gateways_' . $this->id,
@@ -133,6 +134,8 @@ function init_gopay_gateway_gateway() {
 				20,
 				2
 			);
+
+			add_filter('woocommerce_account_menu_items', array( $this, 'gopay_add_payment_cards_tab' ));
 
 			// Load Woocommerce GoPay gateway admin page.
 			if ( is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
@@ -1485,6 +1488,37 @@ function init_gopay_gateway_gateway() {
 
 			wp_send_json_success(['card_id' => $card_id]);
 		}
+
+		public function check_payment_cards_access() {
+			if ( ! $this->card_token && is_account_page() ) {
+				global $wp_query;
+				if ( isset( $wp_query->query_vars['payment-cards'] ) ) {
+					$wp_query->set_404();
+					status_header( 404 );
+					nocache_headers();
+					include get_query_template( '404' );
+					exit;
+				}
+			}
+		}
+
+		function gopay_add_payment_cards_tab($items) {
+			if ( ! $this->card_token ) {
+				return $items;
+			}
+
+			$new_items = array();
+
+			foreach ($items as $key => $label) {
+				$new_items[$key] = $label;
+
+				if ($key === 'dashboard') {
+					$new_items['payment-cards'] = __('Payment cards', 'gopay-gateway');
+				}
+			}
+
+			return $new_items;
+		}
 	}
 
 	/**
@@ -1500,22 +1534,6 @@ function init_gopay_gateway_gateway() {
 	}
 
 	add_filter( 'woocommerce_payment_gateways', 'add_gopay_gateway' );
-
-	function gopay_add_payment_cards_tab($items) {
-		$new_items = [];
-
-		foreach ($items as $key => $label) {
-			$new_items[$key] = $label;
-
-			if ($key === 'dashboard') {
-				$new_items['payment-cards'] = __('Payment cards', 'gopay-gateway');
-			}
-		}
-
-		return $new_items;
-	}
-
-	add_filter('woocommerce_account_menu_items', 'gopay_add_payment_cards_tab');
 
 	function gopay_payment_cards_content() {
 		echo '<h3>Payment cards</h3>';
