@@ -116,7 +116,7 @@ const GoPayMethodSelection = (props) => {
 							className: 'wc-gopay-method-image',
 						})
 					),
-					method.id === 'PAYMENT_CARD' && selectedMethod === 'PAYMENT_CARD' && settings.isLoggedIn ? createElement('div', { className: 'wc-gopay-card-selection' },
+					method.id === 'PAYMENT_CARD' && selectedMethod === 'PAYMENT_CARD' && settings.isTokenizeEnabled ? createElement('div', { className: 'wc-gopay-card-selection' },
 						createElement('div', { className: 'card_selection_container', id: 'card_selection_container' },
 
 							(settings.savedCards && settings.savedCards.length > 0) ? createElement('div', { className: 'payment_wc_select_card' },
