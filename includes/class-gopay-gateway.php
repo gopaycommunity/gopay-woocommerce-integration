@@ -573,24 +573,15 @@ function init_gopay_gateway_gateway() {
 						'desc_tip'    => true,
 					),
 					'card_token'                    => array(
-						'title'       => __(
-							'Card token payment',
-							'gopay-gateway'
-						),
+						'title'       => __( 'Pay with a saved card', 'gopay-gateway' ),
 						'type'        => 'checkbox',
-						'label' 	  => __(
-							'Enable storing credit cards for customers<br>
-							<div style="color:#b32d2e;font-weight:600;">
-							⚠ Enable this option only if card tokenization is activated for your GoPay merchant account. </div>
-							<div style="color:#b32d2e;font-weight:600;">If your account does not support this feature, checkout may fail and payments may become unavailable.</div>
-							',
-							'gopay-gateway'
-						),
-						'description' => __(
-							'When the customer pays with a card, you can request for the card to be saved. In that case, a card token will be generated that you can use for subsequent payments.'.
-							'If you do use it, the customer will not have to input the card details manually.',
-							'gopay-gateway'
-						),
+						'label' 	  => __( 'Enable customers to save payment cards', 'gopay-gateway' ) . '<br>' .
+							'<div class="gopay-setting-warning">' .
+							'<span class="dashicons dashicons-warning"></span>' .
+							__( 'Enable this option only if card saving / tokenization is active for your GoPay merchant account.', 'gopay-gateway' ) . '</div>' .
+							'<div class="gopay-setting-warning">' .
+							__( 'If your account does not support this feature, checkout may fail and payments may become unavailable.', 'gopay-gateway' ) . '</div>',
+						'description' => __( 'When a customer pays by card, you can offer to save the card. In that case, a card token will be generated and can be used for future payments. If used, the customer will not have to enter the card details manually again.', 'gopay-gateway' ),
 						'desc_tip'    => true,
 					),
 				);
@@ -870,11 +861,11 @@ function init_gopay_gateway_gateway() {
 								$enabled_payment_methods .= '
 									<div class="payment_wc_select_card" id="payment_wc_select_card">
 									<span>
-										' . __( 'Select payment card', 'gopay-gateway' ) . '
+										' . esc_html__( 'Select payment card', 'gopay-gateway' ) . '
 									</span>
 
 									<select class="saved_card_select" id="saved_card" name="saved_card">
-										<option value="new">' . __( 'New Card', 'gopay-gateway' ) . '</option>';
+										<option value="new">' . esc_html__( 'New Card', 'gopay-gateway' ) . '</option>';
 
 								foreach ( $saved_cards as $card ) {
 									$enabled_payment_methods .= sprintf(
@@ -894,7 +885,7 @@ function init_gopay_gateway_gateway() {
 							$enabled_payment_methods .= '
 									<div class="payment_wc_store_token" id="payment_wc_store_token">
 										<input type="checkbox" id="request_card_token" name="request_card_token" value="1" />
-										<label for="request_card_token">'. __( 'Save payment card to my account for future purchases.', 'gopay-gateway' ) . '</label>
+										<label for="request_card_token">'. esc_html__( 'Save this payment card to my account for future purchases.', 'gopay-gateway' ) . '</label>
 									</div>
 								</div>
 
@@ -1378,7 +1369,9 @@ function init_gopay_gateway_gateway() {
 		public function admin_enqueue_styles() {
 			wp_enqueue_style(
 				'gopay-gateway-payment-methods-styles',
-				GOPAY_GATEWAY_URL . 'includes/assets/css/form_fields.css'
+				GOPAY_GATEWAY_URL . 'includes/assets/css/form_fields.css',
+				array(),
+				'1.0.0'
 			);
 		}
 
@@ -1547,8 +1540,8 @@ function init_gopay_gateway_gateway() {
 	add_filter( 'woocommerce_payment_gateways', 'add_gopay_gateway' );
 
 	function gopay_payment_cards_content() {
-		echo '<h3>Payment cards</h3>';
-		echo '<p>Here are your saved cards:</p>';
+		echo '<h3>'.esc_html__('Saved payment cards', 'gopay-gateway').'</h3>';
+		echo '<p>'.esc_html__('Here are your saved cards:', 'gopay-gateway').'</p>';
 
 		$saved_cards = Gopay_Gateway_API::get_card_details();
 
@@ -1558,10 +1551,10 @@ function init_gopay_gateway_gateway() {
 		echo '<table class="gopay-cards-table">';
 		echo '<thead>';
 		echo '<tr>';
-		echo '<th>Brand</th>';
-		echo '<th>Card number</th>';
-		echo '<th>Expiry</th>';
-		echo '<th>Actions</th>';
+		echo '<th>'.esc_html__('Brand', 'gopay-gateway').'</th>';
+		echo '<th>'.esc_html__('Card number', 'gopay-gateway').'</th>';
+		echo '<th>'.esc_html__('Expiry', 'gopay-gateway').'</th>';
+		echo '<th>'.esc_html__('Action', 'gopay-gateway').'</th>';
 		echo '</tr>';
 		echo '</thead>';
 		echo '<tbody>';
@@ -1585,16 +1578,16 @@ function init_gopay_gateway_gateway() {
 			echo '<button id="gopay-delete-card" class="gopay-delete-card" 
 					data-card-id="' . esc_attr($card['card_id']) . '" 
 					data-nonce="' . esc_attr($nonce) . '">
-					Delete
+					'.esc_html__('Delete', 'gopay-gateway').'
 				</button>';
 
 			echo '<div id="gopay-delete-confirm" class="gopay-delete-confirm" style="display:none;">
-					<span>Are you sure?</span>
+					<span>'.esc_html__('Are you sure?', 'gopay-gateway').'</span>
 					<div>
 						<button id="gopay-confirm-yes" class="gopay-confirm-yes" 
 							data-card-id="' . esc_attr($card['card_id']) . '" 
-							data-nonce="' . esc_attr($nonce) . '">OK</button>
-						<button id="gopay-confirm-cancel" class="gopay-confirm-cancel">Cancel</button>
+							data-nonce="' . esc_attr($nonce) . '">'.esc_html__('OK', 'gopay-gateway').'</button>
+						<button id="gopay-confirm-cancel" class="gopay-confirm-cancel">'.esc_html__('Cancel', 'gopay-gateway').'</button>
 					</div>
 				</div>';
 

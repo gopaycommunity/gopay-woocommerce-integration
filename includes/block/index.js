@@ -143,7 +143,7 @@ const GoPayMethodSelection = (props) => {
 									checked: requestCardToken,
 									onChange: (e) => setRequestCardToken(e.target.checked)
 								}),
-								createElement('label', { htmlFor: 'request_card_token' }, __('Save payment card to my account for future purchases.', 'gopay-gateway')),
+								createElement('label', { htmlFor: 'request_card_token' }, __('Save this payment card to my account for future purchases.', 'gopay-gateway')),
 							),
 						)
 					) : null
