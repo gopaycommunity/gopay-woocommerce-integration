@@ -559,3 +559,61 @@ msgstr "Só pode emitir um reembolso parcial 24 horas após o pagamento."
 
 msgid "Refund failed."
 msgstr "O reembolso falhou."
+
+
+msgid "Pay with a saved card"
+msgstr "Pagar com cartão salvo"
+
+msgid "Enable customers to save payment cards"
+msgstr "Permitir que os clientes salvem cartões de pagamento"
+
+msgid "When a customer pays by card, you can offer to save the card. In that case, a card token will be generated and can be used for future payments. If used, the customer will not have to enter the card details manually again."
+msgstr "Quando o cliente pagar com cartão, você pode oferecer a opção de salvar o cartão. Nesse caso, será gerado um token do cartão, que poderá ser usado em pagamentos futuros. Se ele for usado, o cliente não precisará inserir os dados do cartão manualmente novamente."
+
+msgid "Enable this option only if card saving / tokenization is active for your GoPay merchant account."
+msgstr "Ative esta opção somente se o salvamento de cartão / a tokenização estiver ativo para a sua conta de comerciante GoPay."
+
+msgid "If your account does not support this feature, checkout may fail and payments may become unavailable."
+msgstr "Se a sua conta não oferecer suporte a esse recurso, o processo de pagamento poderá falhar e os pagamentos poderão ficar indisponíveis."
+
+msgid "Payment cards"
+msgstr "Cartões de pagamento"
+
+msgid "Saved payment cards"
+msgstr "Cartões de pagamento salvos"
+
+msgid "Here are your saved cards:"
+msgstr "Aqui estão os seus cartões salvos:"
+
+msgid "Brand"
+msgstr "Tipo de cartão"
+
+msgid "Card number"
+msgstr "Número do cartão"
+
+msgid "Expiry"
+msgstr "Validade"
+
+msgid "Action"
+msgstr "Ação"
+
+msgid "Delete"
+msgstr "Excluir"
+
+msgid "Are you sure?"
+msgstr "Tem certeza?"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Select payment card"
+msgstr "Selecione um cartão de pagamento"
+
+msgid "New Card"
+msgstr "Novo cartão"
+
+msgid "Save this payment card to my account for future purchases."
+msgstr "Salvar este cartão de pagamento na minha conta para compras futuras."

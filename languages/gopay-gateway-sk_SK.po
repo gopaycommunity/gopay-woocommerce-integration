@@ -555,3 +555,61 @@ msgstr "Čiastočnú refundáciu môžete vystaviť len 24 hodín po platbe."
 
 msgid "Refund failed."
 msgstr "Vrátenie peňazí sa nepodarilo."
+
+
+msgid "Pay with a saved card"
+msgstr "Platba uloženou kartou"
+
+msgid "Enable customers to save payment cards"
+msgstr "Povoliť zákazníkom ukladanie platobných kariet"
+
+msgid "When a customer pays by card, you can offer to save the card. In that case, a card token will be generated and can be used for future payments. If used, the customer will not have to enter the card details manually again."
+msgstr "Keď zákazník platí kartou, môžete požiadať o uloženie karty. V takom prípade sa vygeneruje token karty, ktorý môžete použiť pri ďalších platbách. Ak ho použijete, zákazník nebude musieť znova ručne zadávať údaje o karte."
+
+msgid "Enable this option only if card saving / tokenization is active for your GoPay merchant account."
+msgstr "Túto možnosť povoľte iba ak máte pre svoj obchodnícky účet GoPay aktívne uloženie karty / tokenizáciu."
+
+msgid "If your account does not support this feature, checkout may fail and payments may become unavailable."
+msgstr "Ak váš účet túto funkciu nepodporuje, môže dôjsť k zlyhaniu pokladne a platby nemusia byť dostupné."
+
+msgid "Payment cards"
+msgstr "Platobné karty"
+
+msgid "Saved payment cards"
+msgstr "Uložené platobné karty"
+
+msgid "Here are your saved cards:"
+msgstr "Tu sú vaše uložené karty:"
+
+msgid "Brand"
+msgstr "Značka karty"
+
+msgid "Card number"
+msgstr "Číslo karty"
+
+msgid "Expiry"
+msgstr "Platnosť"
+
+msgid "Action"
+msgstr "Akcia"
+
+msgid "Delete"
+msgstr "Vymazať"
+
+msgid "Are you sure?"
+msgstr "Naozaj?"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Cancel"
+msgstr "Zrušiť"
+
+msgid "Select payment card"
+msgstr "Vyberte platobnú kartu"
+
+msgid "New Card"
+msgstr "Nová karta"
+
+msgid "Save this payment card to my account for future purchases."
+msgstr "Uložiť platobnú kartu k môjmu účtu pre budúce nákupy."

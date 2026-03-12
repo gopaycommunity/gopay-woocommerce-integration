@@ -556,3 +556,61 @@ msgstr "Частично възстановяване може да бъде и�
 
 msgid "Refund failed."
 msgstr "Възстановяването е неуспешно."
+
+
+msgid "Pay with a saved card"
+msgstr "Плащане със запазена карта"
+
+msgid "Enable customers to save payment cards"
+msgstr "Разрешаване на клиентите да запазват платежни карти"
+
+msgid "When a customer pays by card, you can offer to save the card. In that case, a card token will be generated and can be used for future payments. If used, the customer will not have to enter the card details manually again."
+msgstr "Когато клиент плаща с карта, можете да му предложите да запази картата. В такъв случай ще бъде генериран картов токен, който може да се използва за бъдещи плащания. Ако бъде използван, клиентът няма да трябва да въвежда данните на картата отново ръчно."
+
+msgid "Enable this option only if card saving / tokenization is active for your GoPay merchant account."
+msgstr "Активирайте тази опция само ако запазването на карта / токенизацията е активно за вашия GoPay търговски акаунт."
+
+msgid "If your account does not support this feature, checkout may fail and payments may become unavailable."
+msgstr "Ако акаунтът ви не поддържа тази функция, процесът на плащане може да се провали и плащанията може да станат недостъпни."
+
+msgid "Payment cards"
+msgstr "Платежни карти"
+
+msgid "Saved payment cards"
+msgstr "Запазени платежни карти"
+
+msgid "Here are your saved cards:"
+msgstr "Ето вашите запазени карти:"
+
+msgid "Brand"
+msgstr "Вид карта"
+
+msgid "Card number"
+msgstr "Номер на карта"
+
+msgid "Expiry"
+msgstr "Валидна до"
+
+msgid "Action"
+msgstr "Действие"
+
+msgid "Delete"
+msgstr "Изтриване"
+
+msgid "Are you sure?"
+msgstr "Сигурни ли сте?"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Cancel"
+msgstr "Отказ"
+
+msgid "Select payment card"
+msgstr "Изберете платежна карта"
+
+msgid "New Card"
+msgstr "Нова карта"
+
+msgid "Save this payment card to my account for future purchases."
+msgstr "Запазете тази платежна карта в моя акаунт за бъдещи покупки."

@@ -529,11 +529,6 @@ msgid "GoID, Client ID and Client Secret are mandatory. Please provide valid GoI
 msgstr "GoID, Client ID a Client Secret jsou povinné. Uveďte platné GoID, ID klienta a Client Secret."
 
 
-
-
-
-
-
 msgid ""
 "If enabled, customers cannot choose any specific bank at the checkout, they "
 "are grouped into one “Bank account” option, but they have to select the bank "
@@ -545,3 +540,60 @@ msgstr "Částečné vrácení peněz je možné pouze 24 hodin po provedení pl
 
 msgid "Refund failed."
 msgstr "Vrácení peněz se nezdařilo."
+
+msgid "Pay with a saved card"
+msgstr "Platba uloženou kartou"
+
+msgid "Enable customers to save payment cards"
+msgstr "Povolit zákazníkům ukládání platebních karet"
+
+msgid "When a customer pays by card, you can offer to save the card. In that case, a card token will be generated and can be used for future payments. If used, the customer will not have to enter the card details manually again."
+msgstr "Když zákazník platí kartou, můžete požádat o uložení karty. V takovém případě se vygeneruje token karty, který můžete použít pro další platby. Pokud jej použijete, zákazník nebude muset znovu ručně zadávat údaje o kartě."
+
+msgid "Enable this option only if card saving / tokenization is active for your GoPay merchant account."
+msgstr "Tuto možnost povolte pouze pokud máte pro svůj obchodnický účet GoPay aktivní uložení karty / tokenizaci."
+
+msgid "If your account does not support this feature, checkout may fail and payments may become unavailable."
+msgstr "Pokud váš účet tuto funkci nepodporuje, může dojít k selhání pokladny a platby nemusí být dostupné."
+
+msgid "Payment cards"
+msgstr "Platební karty"
+
+msgid "Saved payment cards"
+msgstr "Uložené platební karty"
+
+msgid "Here are your saved cards:"
+msgstr "Zde jsou vaše uložené karty:"
+
+msgid "Brand"
+msgstr "Značka karty"
+
+msgid "Card number"
+msgstr "Číslo karty"
+
+msgid "Expiry"
+msgstr "Platnost"
+
+msgid "Action"
+msgstr "Akce"
+
+msgid "Delete"
+msgstr "Smazat"
+
+msgid "Are you sure?"
+msgstr "Opravdu?"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Cancel"
+msgstr "Zrušit"
+
+msgid "Select payment card"
+msgstr "Vyberte platební kartu"
+
+msgid "New Card"
+msgstr "Nová karta"
+
+msgid "Save this payment card to my account for future purchases."
+msgstr "Uložit platební kartu k mému účtu pro budoucí nákupy."

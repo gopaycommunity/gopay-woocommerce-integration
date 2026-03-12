@@ -558,3 +558,61 @@ msgstr "Puteți emite o rambursare parțială numai după 24 de ore de la efectu
 
 msgid "Refund failed."
 msgstr "Rambursarea a eșuat."
+
+
+msgid "Pay with a saved card"
+msgstr "Plată cu card salvat"
+
+msgid "Enable customers to save payment cards"
+msgstr "Permiteți clienților să salveze carduri de plată"
+
+msgid "When a customer pays by card, you can offer to save the card. In that case, a card token will be generated and can be used for future payments. If used, the customer will not have to enter the card details manually again."
+msgstr "Atunci când clientul plătește cu cardul, îi puteți oferi opțiunea de a salva cardul. În acest caz, va fi generat un token al cardului, care poate fi utilizat pentru plăți viitoare. Dacă este utilizat, clientul nu va mai trebui să introducă din nou manual datele cardului."
+
+msgid "Enable this option only if card saving / tokenization is active for your GoPay merchant account."
+msgstr "Activați această opțiune numai dacă salvarea cardului / tokenizarea este activă pentru contul dumneavoastră de comerciant GoPay."
+
+msgid "If your account does not support this feature, checkout may fail and payments may become unavailable."
+msgstr "Dacă contul dumneavoastră nu acceptă această funcție, procesul de plată poate eșua, iar plățile pot deveni indisponibile."
+
+msgid "Payment cards"
+msgstr "Carduri de plată"
+
+msgid "Saved payment cards"
+msgstr "Carduri de plată salvate"
+
+msgid "Here are your saved cards:"
+msgstr "Iată cardurile dumneavoastră salvate:"
+
+msgid "Brand"
+msgstr "Marcă card"
+
+msgid "Card number"
+msgstr "Număr card"
+
+msgid "Expiry"
+msgstr "Expirare"
+
+msgid "Action"
+msgstr "Acțiune"
+
+msgid "Delete"
+msgstr "Șterge"
+
+msgid "Are you sure?"
+msgstr "Sunteți sigur?"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Cancel"
+msgstr "Anulează"
+
+msgid "Select payment card"
+msgstr "Selectați un card de plată"
+
+msgid "New Card"
+msgstr "Card nou"
+
+msgid "Save this payment card to my account for future purchases."
+msgstr "Salvează acest card de plată în contul meu pentru achiziții viitoare."

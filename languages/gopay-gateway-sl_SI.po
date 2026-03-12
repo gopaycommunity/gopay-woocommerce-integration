@@ -556,3 +556,61 @@ msgstr "Delno vračilo lahko izdate le 24 ur po plačilu."
 
 msgid "Refund failed."
 msgstr "Vračilo ni bilo uspešno."
+
+
+msgid "Pay with a saved card"
+msgstr "Plačilo s shranjeno kartico"
+
+msgid "Enable customers to save payment cards"
+msgstr "Omogočite strankam shranjevanje plačilnih kartic"
+
+msgid "When a customer pays by card, you can offer to save the card. In that case, a card token will be generated and can be used for future payments. If used, the customer will not have to enter the card details manually again."
+msgstr "Ko stranka plača s kartico, ji lahko ponudite možnost shranitve kartice. V tem primeru se ustvari žeton kartice, ki ga je mogoče uporabiti za prihodnja plačila. Če se uporabi, stranki ne bo treba ponovno ročno vnašati podatkov o kartici."
+
+msgid "Enable this option only if card saving / tokenization is active for your GoPay merchant account."
+msgstr "To možnost omogočite samo, če je shranjevanje kartice / tokenizacija aktivna za vaš GoPay trgovski račun."
+
+msgid "If your account does not support this feature, checkout may fail and payments may become unavailable."
+msgstr "Če vaš račun te funkcije ne podpira, lahko postopek plačila ne uspe in plačila lahko postanejo nedostopna."
+
+msgid "Payment cards"
+msgstr "Plačilne kartice"
+
+msgid "Saved payment cards"
+msgstr "Shranjene plačilne kartice"
+
+msgid "Here are your saved cards:"
+msgstr "Tukaj so vaše shranjene kartice:"
+
+msgid "Brand"
+msgstr "Vrsta kartice"
+
+msgid "Card number"
+msgstr "Številka kartice"
+
+msgid "Expiry"
+msgstr "Velja do"
+
+msgid "Action"
+msgstr "Dejanje"
+
+msgid "Delete"
+msgstr "Izbriši"
+
+msgid "Are you sure?"
+msgstr "Ali ste prepričani?"
+
+msgid "OK"
+msgstr "V redu"
+
+msgid "Cancel"
+msgstr "Prekliči"
+
+msgid "Select payment card"
+msgstr "Izberite plačilno kartico"
+
+msgid "New Card"
+msgstr "Nova kartica"
+
+msgid "Save this payment card to my account for future purchases."
+msgstr "Shrani to plačilno kartico v moj račun za prihodnje nakupe."

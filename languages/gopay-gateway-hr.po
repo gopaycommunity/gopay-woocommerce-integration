@@ -555,3 +555,61 @@ msgstr "Djelomičan povrat možete izvršiti samo 24 sata nakon uplate."
 
 msgid "Refund failed."
 msgstr "Povrat nije uspio."
+
+
+msgid "Pay with a saved card"
+msgstr "Plaćanje spremljenom karticom"
+
+msgid "Enable customers to save payment cards"
+msgstr "Omogućite korisnicima spremanje platnih kartica"
+
+msgid "When a customer pays by card, you can offer to save the card. In that case, a card token will be generated and can be used for future payments. If used, the customer will not have to enter the card details manually again."
+msgstr "Kada korisnik plaća karticom, možete mu ponuditi spremanje kartice. U tom slučaju generirat će se token kartice koji se može koristiti za buduća plaćanja. Ako se koristi, korisnik neće morati ponovno ručno unositi podatke o kartici."
+
+msgid "Enable this option only if card saving / tokenization is active for your GoPay merchant account."
+msgstr "Omogućite ovu opciju samo ako je spremanje kartice / tokenizacija aktivna za vaš GoPay trgovački račun."
+
+msgid "If your account does not support this feature, checkout may fail and payments may become unavailable."
+msgstr "Ako vaš račun ne podržava ovu funkciju, proces naplate može ne uspjeti, a plaćanja mogu postati nedostupna."
+
+msgid "Payment cards"
+msgstr "Platne kartice"
+
+msgid "Saved payment cards"
+msgstr "Spremljene platne kartice"
+
+msgid "Here are your saved cards:"
+msgstr "Ovdje su vaše spremljene kartice:"
+
+msgid "Brand"
+msgstr "Vrsta kartice"
+
+msgid "Card number"
+msgstr "Broj kartice"
+
+msgid "Vrijedi do"
+msgstr "Platnost"
+
+msgid "Action"
+msgstr "Radnja"
+
+msgid "Delete"
+msgstr "Izbriši"
+
+msgid "Are you sure?"
+msgstr "Jeste li sigurni?"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Cancel"
+msgstr "Odustani"
+
+msgid "Select payment card"
+msgstr "Odaberite platnu karticu"
+
+msgid "New Card"
+msgstr "Nova kartica"
+
+msgid "Save this payment card to my account for future purchases."
+msgstr "Spremi ovu platnu karticu na moj račun za buduće kupnje."

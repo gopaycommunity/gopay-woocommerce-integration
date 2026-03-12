@@ -557,3 +557,61 @@ msgstr "Részleges visszatérítést csak a kifizetést követő 24 órán belü
 
 msgid "Refund failed."
 msgstr "A visszatérítés sikertelen."
+
+
+msgid "Pay with a saved card"
+msgstr "Fizetés mentett kártyával"
+
+msgid "Enable customers to save payment cards"
+msgstr "Engedélyezze az ügyfelek számára a fizetési kártyák mentését"
+
+msgid "When a customer pays by card, you can offer to save the card. In that case, a card token will be generated and can be used for future payments. If used, the customer will not have to enter the card details manually again."
+msgstr "Amikor az ügyfél bankkártyával fizet, felajánlhatja neki a kártya mentését. Ebben az esetben létrejön egy kártyatoken, amely a jövőbeli fizetésekhez használható. Ha ezt használja, az ügyfélnek nem kell újra kézzel megadnia a kártyaadatokat."
+
+msgid "Enable this option only if card saving / tokenization is active for your GoPay merchant account."
+msgstr "Ezt az opciót csak akkor engedélyezze, ha a kártyamentés / tokenizáció aktív az Ön GoPay kereskedői fiókjához."
+
+msgid "If your account does not support this feature, checkout may fail and payments may become unavailable."
+msgstr "Ha a fiókja nem támogatja ezt a funkciót, a fizetési folyamat meghiúsulhat, és a fizetések elérhetetlenné válhatnak."
+
+msgid "Payment cards"
+msgstr "Fizetési kártyák"
+
+msgid "Saved payment cards"
+msgstr "Mentett fizetési kártyák"
+
+msgid "Here are your saved cards:"
+msgstr "Itt találhatók a mentett kártyái:"
+
+msgid "Brand"
+msgstr "Kártyatípus"
+
+msgid "Card number"
+msgstr "Kártyaszám"
+
+msgid "Expiry"
+msgstr "Lejárat"
+
+msgid "Action"
+msgstr "Művelet"
+
+msgid "Delete"
+msgstr "Törlés"
+
+msgid "Are you sure?"
+msgstr "Biztos benne?"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Cancel"
+msgstr "Mégse"
+
+msgid "Select payment card"
+msgstr "Válasszon fizetési kártyát"
+
+msgid "New Card"
+msgstr "Új kártya"
+
+msgid "Save this payment card to my account for future purchases."
+msgstr "Fizetési kártya mentése a fiókomhoz jövőbeli vásárlásokhoz."

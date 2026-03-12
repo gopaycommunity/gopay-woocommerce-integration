@@ -557,3 +557,61 @@ msgstr "Eine Teilerstattung kann nur 24 Stunden nach der Zahlung erfolgen."
 
 msgid "Refund failed."
 msgstr "Die Erstattung ist fehlgeschlagen."
+
+
+msgid "Pay with a saved card"
+msgstr "Mit gespeicherter Karte bezahlen"
+
+msgid "Enable customers to save payment cards"
+msgstr "Kunden das Speichern von Zahlungskarten ermöglichen"
+
+msgid "When a customer pays by card, you can offer to save the card. In that case, a card token will be generated and can be used for future payments. If used, the customer will not have to enter the card details manually again."
+msgstr "Wenn ein Kunde mit Karte bezahlt, können Sie anbieten, die Karte zu speichern. In diesem Fall wird ein Kartentoken generiert, das für zukünftige Zahlungen verwendet werden kann. Wenn es verwendet wird, muss der Kunde die Kartendaten nicht erneut manuell eingeben."
+
+msgid "Enable this option only if card saving / tokenization is active for your GoPay merchant account."
+msgstr "Aktivieren Sie diese Option nur, wenn das Speichern von Karten / die Tokenisierung für Ihr GoPay-Händlerkonto aktiv ist."
+
+msgid "If your account does not support this feature, checkout may fail and payments may become unavailable."
+msgstr "Wenn Ihr Konto diese Funktion nicht unterstützt, kann der Bezahlvorgang fehlschlagen und Zahlungen können nicht verfügbar sein."
+
+msgid "Payment cards"
+msgstr "Zahlungskarten"
+
+msgid "Saved payment cards"
+msgstr "Gespeicherte Zahlungskarten"
+
+msgid "Here are your saved cards:"
+msgstr "Hier sind Ihre gespeicherten Karten:"
+
+msgid "Brand"
+msgstr "Kartentyp"
+
+msgid "Card number"
+msgstr "Kartennummer"
+
+msgid "Expiry"
+msgstr "Gültig bis"
+
+msgid "Action"
+msgstr "Aktion"
+
+msgid "Delete"
+msgstr "Löschen"
+
+msgid "Are you sure?"
+msgstr "Sind Sie sicher?"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgid "Select payment card"
+msgstr "Zahlungskarte auswählen"
+
+msgid "New Card"
+msgstr "Neue Karte"
+
+msgid "Save this payment card to my account for future purchases."
+msgstr "Diese Zahlungskarte für zukünftige Einkäufe in meinem Konto speichern."
