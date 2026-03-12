@@ -1,7 +1,7 @@
 const { registerPaymentMethod } = window.wc.wcBlocksRegistry;
 const { getSetting } = window.wc.wcSettings;
 const { createElement, useState, useEffect } = window.wp.element;
-const { __ } = window.wp.i18n;
+const i18n = window.gopayI18n || {};
 
 
 // Retrieving settings from data provided by PHP
@@ -64,7 +64,7 @@ const GoPayMethodSelection = (props) => {
 			if (!selectedMethod) {
 				return {
 					type: 'error',
-					message: __('Select GoPay Payment Methods...', 'gopay-gateway'),
+					message: i18n.selectPaymentMethod,
 				};
 			}
 
@@ -120,7 +120,7 @@ const GoPayMethodSelection = (props) => {
 						createElement('div', { className: 'card_selection_container', id: 'card_selection_container' },
 
 							(settings.savedCards && settings.savedCards.length > 0) ? createElement('div', { className: 'payment_wc_select_card' },
-								createElement('span', {}, __('Select payment card', 'gopay-gateway')),
+								createElement('span', {}, i18n.selectPaymentCard),
 								createElement('select', {
 									className: 'saved_card_select',
 									id: 'saved_card',
@@ -128,7 +128,7 @@ const GoPayMethodSelection = (props) => {
 									value: selectedCard,
 									onChange: (e) => setSelectedCard(e.target.value)
 								},
-									createElement('option', { value: 'new' }, __('New Card', 'gopay-gateway')),
+									createElement('option', { value: 'new' }, i18n.newCard),
 									settings.savedCards.map((card) =>
 										createElement('option', { key: card.card_id, value: card.card_id }, `${card.card_brand} ****${card.card_number} (${card.card_expiration})`)
 									)
@@ -143,7 +143,7 @@ const GoPayMethodSelection = (props) => {
 									checked: requestCardToken,
 									onChange: (e) => setRequestCardToken(e.target.checked)
 								}),
-								createElement('label', { htmlFor: 'request_card_token' }, __('Save this payment card to my account for future purchases.', 'gopay-gateway')),
+								createElement('label', { htmlFor: 'request_card_token' }, i18n.saveCard),
 							),
 						)
 					) : null
@@ -157,11 +157,11 @@ const GoPayMethodSelection = (props) => {
 // The object is used by WooCommerce Blocks to register the gateway
 const GoPayGateway = {
 	name: 'wc_gopay_gateway',
-	label: settings.title || __('GoPay', 'gopay-gateway'),
+	label: settings.title || i18n.gopay,
 	content: createElement(GoPayMethodSelection),
 	edit: createElement(GoPayMethodSelection),
 	canMakePayment: () => true,
-	ariaLabel: settings.title || __('GoPay', 'gopay-gateway'),
+	ariaLabel: settings.title || i18n.gopay,
 	supports: settings.supports || {
 		features: ['products']
 	}

@@ -38,9 +38,16 @@ final class WC_Gopay_Blocks_Support extends AbstractPaymentMethodType {
 			true
 		);
 
-		wp_set_script_translations(
+		wp_localize_script(
 			'wc-gopay-blocks-integration',
-			'gopay-gateway'
+			'gopayI18n',
+			[
+				'selectPaymentMethod' => __( 'Select GoPay Payment Methods...', 'gopay-gateway' ),
+				'selectPaymentCard'   => __( 'Select payment card', 'gopay-gateway' ),
+				'newCard'             => __( 'New Card', 'gopay-gateway' ),
+				'saveCard'            => __( 'Save this payment card to my account for future purchases.', 'gopay-gateway' ),
+				'gopay'               => __( 'GoPay', 'gopay-gateway' ),
+			]
 		);
 
 		return [ 'wc-gopay-blocks-integration' ];
