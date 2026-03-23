@@ -399,7 +399,7 @@ class Gopay_Gateway_API {
 
 		switch ( $response->json['state'] ) {
 			case 'PAID':
-				if ( $order->is_paid() || $order->has_status( array( 'processing', 'completed' ) ) ) {
+				if ( $order->is_paid() ) {
 					wp_safe_redirect( $order->get_checkout_order_received_url() );
 					exit;
 				}
