@@ -399,6 +399,10 @@ class Gopay_Gateway_API {
 
 		switch ( $response->json['state'] ) {
 			case 'PAID':
+				if ( $order->is_paid() ) {
+					wp_safe_redirect( $order->get_checkout_order_received_url() );
+					exit;
+				}
 				$transaction_id = $response->json['id'];
 				$order->payment_complete( $transaction_id );
 
