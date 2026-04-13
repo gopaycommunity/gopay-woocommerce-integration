@@ -4,7 +4,7 @@ Tags: WooCommerce, GoPay
 Requires at least: 5.8
 Tested up to: 6.9
 Requires PHP: 8.1
-Stable tag: 1.0.27
+Stable tag: 1.0.28
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -183,3 +183,6 @@ Build: Update Composer dependency set to latest available versions
 
 = 1.0.27 =
 * Compatibility with WPML
+
+= 1.0.28 =
+* Compatibility with WPML - added missing file
