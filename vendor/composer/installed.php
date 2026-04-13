@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => '__root__',
-        'pretty_version' => 'dev-feature/GPY025-62-update-composer-dependencies',
-        'version' => 'dev-feature/GPY025-62-update-composer-dependencies',
-        'reference' => 'b43c9e5f3ab0cf16186782888a2c0f373a12e963',
+        'pretty_version' => 'dev-feature/card-token-payment',
+        'version' => 'dev-feature/card-token-payment',
+        'reference' => 'e8274361de4cc3b6bd158a5f6baeabe1c9adc695',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         '__root__' => array(
-            'pretty_version' => 'dev-feature/GPY025-62-update-composer-dependencies',
-            'version' => 'dev-feature/GPY025-62-update-composer-dependencies',
-            'reference' => 'b43c9e5f3ab0cf16186782888a2c0f373a12e963',
+            'pretty_version' => 'dev-feature/card-token-payment',
+            'version' => 'dev-feature/card-token-payment',
+            'reference' => 'e8274361de4cc3b6bd158a5f6baeabe1c9adc695',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -29,9 +29,9 @@
             'dev_requirement' => true,
         ),
         'gopay/payments-sdk-php' => array(
-            'pretty_version' => '1.10.4',
-            'version' => '1.10.4.0',
-            'reference' => 'adc4892dfc17244eff9115005369a7232feef560',
+            'pretty_version' => '1.11.0',
+            'version' => '1.11.0.0',
+            'reference' => '044cea31d490f512a8549e34992d611125c6056b',
             'type' => 'library',
             'install_path' => __DIR__ . '/../gopay/payments-sdk-php',
             'aliases' => array(),
