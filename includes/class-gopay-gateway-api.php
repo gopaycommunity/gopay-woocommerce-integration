@@ -442,7 +442,7 @@ class Gopay_Gateway_API {
 					$card_details = $gopay->getCardDetails($card_id);
 
 					if ( isset($card_details->statusCode) && $card_details->statusCode == 200 ) {
-						$user_id = get_current_user_id();
+						$user_id = $order->get_user_id();
 						Gopay_Gateway_Log::insert_saved_card($user_id,$card_id);
 					}
 				}
