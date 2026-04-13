@@ -869,10 +869,10 @@ function init_gopay_gateway_gateway() {
 
 								foreach ( $saved_cards as $card ) {
 									$enabled_payment_methods .= sprintf(
-										'<option value="%s">%s •••• %s (exp %s)</option>',
+										'<option value="%s">%s %s (exp %s)</option>',
 										esc_attr( $card['card_id'] ),
 										esc_html( $card['card_brand'] ),
-										esc_html( $card['card_number'] ),
+										esc_html( $card['real_masked_pan'] ),
 										esc_html( $card['card_expiration'] )
 									);
 								}
@@ -1562,11 +1562,11 @@ function init_gopay_gateway_gateway() {
 		foreach ($saved_cards as $card) {
 			echo '<tr id="gopay-card-row-' . esc_attr($card['card_id']) . '">';
 			echo '<td data-label="Brand">' . esc_html($card['card_brand']) . '</td>';
+			$short_pan = '****...' . substr( $card['real_masked_pan'], -4 );
 			echo '<td data-label="Card number">
 				<div class="gopay-card-number">
-					<span class="gopay-card-mask">**** **** ****</span>
-					<span class="gopay-card-last4">'
-						. esc_html($card['card_number']) .
+					<span class="gopay-masked-pan" data-short="' . esc_attr( $short_pan ) . '">'
+						. esc_html($card['real_masked_pan']) .
 					'</span>
 				</div>
 			</td>';

@@ -57,14 +57,7 @@
   min-width: 0;
 }
 
-.gopay-card-mask {
-  flex-shrink: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.gopay-card-last4 {
+.gopay-masked-pan {
   flex: 0 0 auto;
 }
 
@@ -143,12 +136,14 @@
 }
 
 @media (max-width: 400px) {
-  .gopay-card-mask {
-    display: none;
+  .gopay-masked-pan {
+    font-size: 0;
+    letter-spacing: 0;
   }
 
-  .gopay-card-number::before {
-    content: "…****";
-    margin-right: 6px;
+  .gopay-masked-pan::before {
+    content: attr(data-short);
+    font-size: 18px;
+    letter-spacing: 2px;
   }
 }

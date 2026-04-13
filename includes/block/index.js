@@ -130,7 +130,7 @@ const GoPayMethodSelection = (props) => {
 								},
 									createElement('option', { value: 'new' }, i18n.newCard),
 									settings.savedCards.map((card) =>
-										createElement('option', { key: card.card_id, value: card.card_id }, `${card.card_brand} ****${card.card_number} (${card.card_expiration})`)
+										createElement('option', { key: card.card_id, value: card.card_id }, `${card.card_brand} ${card.real_masked_pan} (${card.card_expiration})`)
 									)
 								),
 							) : null,

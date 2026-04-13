@@ -539,12 +539,7 @@ class Gopay_Gateway_API {
 				$card_details = $gopay->getCardDetails( $card->card_id );
 
 				if ( isset( $card_details->statusCode ) && $card_details->statusCode == 200 ) {
-
-					$card_number_raw = $card_details->json['card_number'] ?? '';
 					$card_exp_raw    = $card_details->json['card_expiration'] ?? '';
-
-					// Extract last 4 digits safely
-					$card_number = substr( preg_replace('/\D/', '', $card_number_raw ), -4 );
 
 					// Trim whitespace from expiration
 					$card_expiration = str_replace(' ', '', $card_exp_raw);
@@ -552,7 +547,7 @@ class Gopay_Gateway_API {
 					$results[] = array(
 						'id'              => $card->id,
 						'card_id'		  => $card->card_id,
-						'card_number'     => $card_number,
+						'real_masked_pan' => $card_details->json['real_masked_pan'] ?? '',
 						'card_brand'      => $card_details->json['card_brand'] ?? '',
 						'card_expiration' => $card_expiration,
 					);
