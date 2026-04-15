@@ -859,26 +859,53 @@ function init_gopay_gateway_gateway() {
 
 							if ( ! empty( $saved_cards ) ) {
 								$enabled_payment_methods .= '
-									<div class="payment_wc_select_card" id="payment_wc_select_card">
-									<span>
-										' . esc_html__( 'Select payment card', 'gopay-gateway' ) . '
-									</span>
+									<div class="gopay-card-list" id="gopay-card-list">
+										<div class="gopay-card-list__title">
+											' . esc_html__( 'Select payment card', 'gopay-gateway' ) . '
+										</div>
+										<div class="gopay-card-options">';
 
-									<select class="saved_card_select" id="saved_card" name="saved_card">
-										<option value="new">' . esc_html__( 'New Card', 'gopay-gateway' ) . '</option>';
-
+								$is_first_card = true;
 								foreach ( $saved_cards as $card ) {
+									$card_art = ! empty( $card['card_art_url'] )
+										? '<img src="' . esc_url( $card['card_art_url'] ) . '" class="gopay-card-option__art" />'
+										: '';
+
 									$enabled_payment_methods .= sprintf(
-										'<option value="%s">%s %s (exp %s)</option>',
+										'<label class="gopay-card-option" style="margin-bottom: 0px">
+											<input type="radio" name="saved_card" value="%s"%s />
+											<div class="gopay-card-option__content">
+												%s
+												<div class="gopay-card-option__details">
+													<span class="gopay-card-option__brand">%s</span>
+													<span class="gopay-card-option__number">%s</span>
+													<span class="gopay-card-option__expiry">(exp %s)</span>
+												</div>
+											</div>
+										</label>',
 										esc_attr( $card['card_id'] ),
+										$is_first_card ? ' checked' : '',
+										$card_art,
 										esc_html( $card['card_brand'] ),
 										esc_html( $card['real_masked_pan'] ),
 										esc_html( $card['card_expiration'] )
 									);
+									$is_first_card = false;
 								}
 
+								// New Card Option
 								$enabled_payment_methods .= '
-									</select>
+											<label class="gopay-card-option is-new">
+												<input type="radio" name="saved_card" value="new" />
+												<div class="gopay-card-option__content">
+													<div class="gopay-card-option__details">
+														<span class="gopay-card-option__brand">' . esc_html__( 'New Card', 'gopay-gateway' ) . '</span>
+													</div>
+												</div>
+											</label>';
+
+								$enabled_payment_methods .= '
+										</div>
 									</div>';
 							}
 
@@ -931,11 +958,11 @@ function init_gopay_gateway_gateway() {
 				array(
 					'div'    => array( 'id' => true, 'class' => true, 'name' => true, 'style' => true ),
 					'input'  => array( 'class' => true, 'name' => true, 'type' => true, 'id' => true, 'value' => true, 'checked' => true ),
-					'span'   => array(),
-					'img'    => array( 'src' => true, 'alt' => true, 'style' => true ),
+					'span'   => array( 'class' => true ),
+					'img'    => array( 'src' => true, 'alt' => true, 'style' => true, 'class' => true ),
 					'label'  => array( 'for' => true, 'class' => true, 'style' => true ),
 					'select' => array( 'id' => true, 'name' => true, 'class' => true, 'style' => true ),
-					'option' => array( 'value' => true, 'selected' => true ),
+					'option' => array( 'value' => true, 'selected' => true, 'data-card-art' => true ),
 				)
 			);
 		}
@@ -1561,7 +1588,13 @@ function init_gopay_gateway_gateway() {
 
 		foreach ($saved_cards as $card) {
 			echo '<tr id="gopay-card-row-' . esc_attr($card['card_id']) . '">';
-			echo '<td data-label="Brand">' . esc_html($card['card_brand']) . '</td>';
+			echo '<td data-label="Brand">';
+			if ( ! empty( $card['card_art_url'] ) ) {
+				echo '<img src="' . esc_url( $card['card_art_url'] ) . '" alt="' . esc_attr( $card['card_brand'] ) . '" class="gopay-card-art" />';
+			} else {
+				echo esc_html( $card['card_brand'] );
+			}
+			echo '</td>';
 			$short_pan = '****...' . substr( $card['real_masked_pan'], -4 );
 			echo '<td data-label="Card number">
 				<div class="gopay-card-number">

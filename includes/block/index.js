@@ -46,7 +46,9 @@ const filteredMethods = filterPaymentMethods(settings.paymentMethods);
 // Component for selecting a GoPay payment method
 const GoPayMethodSelection = (props) => {
 	const [selectedMethod, setSelectedMethod] = useState('');
-	const [selectedCard, setSelectedCard] = useState('new');
+	const [selectedCard, setSelectedCard] = useState(
+		settings.savedCards && settings.savedCards.length > 0 ? settings.savedCards[0].card_id : 'new'
+	);
 	const [requestCardToken, setRequestCardToken] = useState(false);
 	const { eventRegistration, emitResponse } = props;
 	const { onPaymentSetup } = eventRegistration;
@@ -119,23 +121,52 @@ const GoPayMethodSelection = (props) => {
 					method.id === 'PAYMENT_CARD' && selectedMethod === 'PAYMENT_CARD' && settings.isTokenizeEnabled ? createElement('div', { className: 'wc-gopay-card-selection' },
 						createElement('div', { className: 'card_selection_container', id: 'card_selection_container' },
 
-							(settings.savedCards && settings.savedCards.length > 0) ? createElement('div', { className: 'payment_wc_select_card' },
-								createElement('span', {}, i18n.selectPaymentCard),
-								createElement('select', {
-									className: 'saved_card_select',
-									id: 'saved_card',
-									name: 'saved_card',
-									value: selectedCard,
-									onChange: (e) => setSelectedCard(e.target.value)
-								},
-									createElement('option', { value: 'new' }, i18n.newCard),
+							(settings.savedCards && settings.savedCards.length > 0) ? createElement('div', { className: 'gopay-card-list', id: 'gopay-card-list' },
+								createElement('div', { className: 'gopay-card-list__title' }, i18n.selectPaymentCard),
+								createElement('div', { className: 'gopay-card-options' },
+									// Saved Cards
 									settings.savedCards.map((card) =>
-										createElement('option', { key: card.card_id, value: card.card_id }, `${card.card_brand} ${card.real_masked_pan} (${card.card_expiration})`)
+										createElement('label', { key: card.card_id, className: `gopay-card-option ${selectedCard === card.card_id ? 'selected' : ''}` },
+											createElement('input', {
+												type: 'radio',
+												name: 'saved_card',
+												value: card.card_id,
+												checked: selectedCard === card.card_id,
+												onChange: () => { setSelectedCard(card.card_id); setRequestCardToken(false); }
+											}),
+											createElement('div', { className: 'gopay-card-option__content' },
+												card.card_art_url && createElement('img', {
+													src: card.card_art_url,
+													alt: card.card_brand,
+													className: 'gopay-card-option__art'
+												}),
+												createElement('div', { className: 'gopay-card-option__details' },
+													createElement('span', { className: 'gopay-card-option__brand' }, card.card_brand),
+													createElement('span', { className: 'gopay-card-option__number' }, card.real_masked_pan),
+													createElement('span', { className: 'gopay-card-option__expiry' }, `(exp ${card.card_expiration})`)
+												)
+											)
+										)
+									),
+									// New Card Option
+									createElement('label', { className: `gopay-card-option is-new ${selectedCard === 'new' ? 'selected' : ''}` },
+										createElement('input', {
+											type: 'radio',
+											name: 'saved_card',
+											value: 'new',
+											checked: selectedCard === 'new',
+											onChange: () => setSelectedCard('new')
+										}),
+										createElement('div', { className: 'gopay-card-option__content' },
+											createElement('div', { className: 'gopay-card-option__details' },
+												createElement('span', { className: 'gopay-card-option__brand' }, i18n.newCard)
+											)
+										)
 									)
-								),
+								)
 							) : null,
 
-							createElement('div', { className: 'payment_wc_store_token', id: 'payment_wc_store_token' },
+							selectedCard === 'new' && createElement('div', { className: 'payment_wc_store_token', id: 'payment_wc_store_token' },
 								createElement('input', {
 									type: 'checkbox',
 									id: 'request_card_token',
