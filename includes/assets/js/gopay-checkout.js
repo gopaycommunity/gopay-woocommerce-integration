@@ -1,57 +1,43 @@
 jQuery(function ($) {
 
-    const toggleCardUI = () => {
-        const selectedMethod = $('input[name="gopay_payment_method"]:checked').val();
+    const updateCardContainer = (animate) => {
+        const isPaymentCard = $('input[name="gopay_payment_method"]:checked').val() === 'PAYMENT_CARD';
 
-        $('#payment_wc_store_token').slideDown();
-
-        if (selectedMethod === 'PAYMENT_CARD') {
-            $('#card_selection_container').slideDown();
+        if (isPaymentCard) {
+            animate ? $('#card_selection_container').slideDown() : $('#card_selection_container').show();
         } else {
             $('#request_card_token').prop('checked', false);
-
-            $('#saved_card').val('new');
-
-            $('#card_selection_container').slideUp();
-        }
-    }
-
-    const toggleSaveCheckbox = () => {
-        const selectedCard = $('#saved_card').val();
-
-        if (!selectedCard || selectedCard === 'new') {
-            $('#payment_wc_store_token').slideDown();
-        } else {
-            $('#payment_wc_store_token').slideUp();
-        }
-    }
-
-    $(document).on('change', 'input[name="gopay_payment_method"]', () => {
-        toggleCardUI();
-    });
-
-    $(document).on('change', '#saved_card', () => {
-        toggleSaveCheckbox();
-    });
-
-    // WooCommerce refresh support
-    $(document.body).on('updated_checkout', () => {
-        toggleCardUI();
-        toggleSaveCheckbox();
-    });
-
-    const toggleCompactLayout = () => {
-        const $container = $('#payment_wc_select_card');
-        if ($container.length) {
-            $container.toggleClass('compact-layout', $container.width() < 300);
+            animate ? $('#card_selection_container').slideUp() : $('#card_selection_container').hide();
         }
     };
 
-    $(window).on('resize', toggleCompactLayout);
-    $(document.body).on('updated_checkout', toggleCompactLayout);
-    toggleCompactLayout();
+    const updateSaveToken = (animate) => {
+        const selectedCard = $('input[name="saved_card"]:checked').val();
+        const showToken = !selectedCard || selectedCard === 'new';
+
+        if (showToken) {
+            animate ? $('#payment_wc_store_token').slideDown() : $('#payment_wc_store_token').show();
+        } else {
+            animate ? $('#payment_wc_store_token').slideUp() : $('#payment_wc_store_token').hide();
+        }
+    };
+
+    $(document).on('change', 'input[name="gopay_payment_method"]', () => {
+        updateCardContainer(true);
+        updateSaveToken(true);
+    });
+
+    $(document).on('change', 'input[name="saved_card"]', () => {
+        updateSaveToken(true);
+    });
+
+    // WooCommerce checkout refresh support
+    $(document.body).on('updated_checkout', () => {
+        updateCardContainer(false);
+        updateSaveToken(false);
+    });
 
     // Initial state
-    toggleCardUI();
-    toggleSaveCheckbox();
+    updateCardContainer(false);
+    updateSaveToken(false);
 });
