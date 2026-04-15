@@ -523,7 +523,7 @@ class Gopay_Gateway_API {
 		// Get saved cards for current user
 		$cards = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT id, card_id FROM {$table_name} WHERE user_id = %d",
+				"SELECT id, card_id FROM {$table_name} WHERE user_id = %d ORDER BY created_at DESC",
 				$user_id
 			)
 		);
@@ -550,6 +550,7 @@ class Gopay_Gateway_API {
 						'real_masked_pan' => $card_details->json['real_masked_pan'] ?? '',
 						'card_brand'      => $card_details->json['card_brand'] ?? '',
 						'card_expiration' => $card_expiration,
+						'card_art_url'    => $card_details->json['card_art_url'] ?? '',
 					);
 				}
 
