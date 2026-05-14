@@ -47,6 +47,7 @@ function init_gopay_gateway_gateway() {
         private $simplified_bank_selection;
         private $payment_retry;
         private $enable_countries;
+        private $virtual_products_skip_country;
         private $enable_gopay_payment_methods;
         private $enable_banks;
         private $enable_shipping_methods;
@@ -86,13 +87,14 @@ function init_gopay_gateway_gateway() {
 			$this->test          = ! $this->get_option( 'test' );
 			$this->instructions  = $this->get_option( 'instructions' );
 
-			$this->simplified_bank_selection    = $this->get_option( 'simplified_bank_selection' ) === 'yes';
-			$this->payment_retry                = $this->get_option( 'payment_retry' ) === 'yes';
-			$this->enable_countries             = $this->get_option( 'enable_countries', array() );
-			$this->enable_gopay_payment_methods = $this->get_option( 'enable_gopay_payment_methods', array() );
-			$this->enable_banks                 = $this->get_option( 'enable_banks', array() );
-			$this->enable_shipping_methods      = $this->get_option( 'enable_shipping_methods', array() );
-			$this->card_token                   = $this->get_option( 'card_token' ) === 'yes';
+			$this->simplified_bank_selection     = $this->get_option( 'simplified_bank_selection' ) === 'yes';
+			$this->payment_retry                 = $this->get_option( 'payment_retry' ) === 'yes';
+			$this->enable_countries              = $this->get_option( 'enable_countries', array() );
+			$this->virtual_products_skip_country = $this->get_option( 'virtual_products_skip_country' ) === 'yes';
+			$this->enable_gopay_payment_methods  = $this->get_option( 'enable_gopay_payment_methods', array() );
+			$this->enable_banks                  = $this->get_option( 'enable_banks', array() );
+			$this->enable_shipping_methods       = $this->get_option( 'enable_shipping_methods', array() );
+			$this->card_token                    = $this->get_option( 'card_token' ) === 'yes';
 
 			$this->supports = array(
 				'subscriptions',
@@ -511,6 +513,20 @@ function init_gopay_gateway_gateway() {
 						'css'         => 'width: 500px; min-height: 50px;',
 						'placeholder' => __( 'Select Available Countries...', 'gopay-gateway' ),
 					),
+					'virtual_products_skip_country'  => array(
+						'title'       => __( 'Skip Country Restriction', 'gopay-gateway' ),
+						'type'        => 'checkbox',
+						'label'       => __(
+							'Skip the country restriction for virtual downloadable products.',
+							'gopay-gateway'
+						),
+						'default'     => 'no',
+						'description' => __(
+							'When enabled, the country restriction is ignored if all products in the cart are both virtual and downloadable.',
+							'gopay-gateway'
+						),
+						'desc_tip'    => true,
+					),
 					'simplified_bank_selection'        => array(
 						'title'       => __( 'Bank Selection', 'gopay-gateway' ),
 						'type'        => 'checkbox',
@@ -649,14 +665,37 @@ function init_gopay_gateway_gateway() {
 			// end Inline.
 
 			if ( ! empty( WC()->customer ) ) {
+				// Check if all products are virtual and/or downloadable.
+				$all_virtual_downloadable = true;
+				$all_virtual              = true;
+
+				foreach ( WC()->cart->get_cart() as $item ) {
+					$product = $item['data'];
+					if ( ! $product->is_virtual() ) {
+						$all_virtual = false;
+					}
+					if ( ! $product->is_virtual() || ! $product->is_downloadable() ) {
+						$all_virtual_downloadable = false;
+					}
+
+					if ( ! $all_virtual && ! $all_virtual_downloadable ) {
+						break;
+					}
+				}
+				// end check virtual or downloadable.
+
 				// Check countries.
 				$billing_country = WC()
 					->cart->get_customer()
 					->get_billing_country();
 
-				if ( empty( $this->enable_countries ) || empty( $billing_country ) ||
-					! in_array( $billing_country, (array) $this->enable_countries, true ) ) {
-					return false;
+				$skip_country_check = $this->virtual_products_skip_country && $all_virtual_downloadable;
+
+				if ( ! $skip_country_check ) {
+					if ( empty( $this->enable_countries ) || empty( $billing_country ) ||
+						! in_array( $billing_country, (array) $this->enable_countries, true ) ) {
+						return false;
+					}
 				}
 				// end check countries.
 
@@ -669,28 +708,9 @@ function init_gopay_gateway_gateway() {
 				}
 				// end check currency.
 
-				// Check if all products are virtual and/or downloadable.
-				$all_virtual_downloadable = true;
-				$all_virtual = true;
-
-				foreach ( WC()->cart->get_cart() as $item ) {
-					$product = $item["data"];
-					if ( ! $product->is_virtual() ) {
-						$all_virtual = false;
-					}
-					if ( ! $product->is_virtual() || ! $product->is_downloadable() ) {
-						$all_virtual_downloadable = false;
-					}
-					
-					if ( !$all_virtual && !$all_virtual_downloadable ) {
-						break;
-					}
-				}
-
 				if ( $all_virtual_downloadable || $all_virtual ) {
 					return parent::is_available();
 				}
-				// end check virtual or downloadable.
 
 				// Check shipping methods.
 				if ( is_page( wc_get_page_id( 'checkout' ) ) &&
