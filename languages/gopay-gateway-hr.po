@@ -625,3 +625,11 @@ msgstr "Preskoči ograničenje prema državi za virtualne preuzimljive proizvode
 
 msgid "When enabled, the country restriction is ignored if all products in the cart are both virtual and downloadable."
 msgstr "Kada je omogućeno, ograničenje prema državi se zanemaruje ako su svi proizvodi u košarici i virtualni i preuzimljivi."
+
+
+msgid "Suspended"
+msgstr "Suspendirana"
+
+
+msgid "This card has been suspended by your bank. You cannot pay with it, but you can delete it."
+msgstr "Ovu karticu je suspendirala vaša banka. Ne možete njome plaćati, ali je možete obrisati."

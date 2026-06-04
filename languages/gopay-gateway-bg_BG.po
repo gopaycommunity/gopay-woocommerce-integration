@@ -626,3 +626,11 @@ msgstr "Пропускане на ограничението по държава
 
 msgid "When enabled, the country restriction is ignored if all products in the cart are both virtual and downloadable."
 msgstr "Когато е активирано, ограничението по държава се игнорира, ако всички продукти в количката са едновременно виртуални и за изтегляне."
+
+
+msgid "Suspended"
+msgstr "Спряна"
+
+
+msgid "This card has been suspended by your bank. You cannot pay with it, but you can delete it."
+msgstr "Тази карта е спряна от вашата банка. Не можете да плащате с нея, но можете да я изтриете."

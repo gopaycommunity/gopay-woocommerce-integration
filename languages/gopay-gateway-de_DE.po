@@ -627,3 +627,11 @@ msgstr "Ländereinschränkung für virtuelle herunterladbare Produkte übersprin
 
 msgid "When enabled, the country restriction is ignored if all products in the cart are both virtual and downloadable."
 msgstr "Wenn aktiviert, wird die Ländereinschränkung ignoriert, wenn alle Produkte im Warenkorb sowohl virtuell als auch herunterladbar sind."
+
+
+msgid "Suspended"
+msgstr "Gesperrt"
+
+
+msgid "This card has been suspended by your bank. You cannot pay with it, but you can delete it."
+msgstr "Diese Karte wurde von Ihrer Bank gesperrt. Sie können damit nicht bezahlen, aber Sie können sie löschen."

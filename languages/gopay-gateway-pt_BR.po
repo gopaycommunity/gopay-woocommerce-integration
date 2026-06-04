@@ -629,3 +629,11 @@ msgstr "Ignorar restrição de país para produtos virtuais para download."
 
 msgid "When enabled, the country restriction is ignored if all products in the cart are both virtual and downloadable."
 msgstr "Quando ativado, a restrição de país é ignorada se todos os produtos no carrinho forem ao mesmo tempo virtuais e para download."
+
+
+msgid "Suspended"
+msgstr "Suspensa"
+
+
+msgid "This card has been suspended by your bank. You cannot pay with it, but you can delete it."
+msgstr "Este cartão foi suspenso pelo seu banco. Você não pode pagar com ele, mas pode excluí-lo."

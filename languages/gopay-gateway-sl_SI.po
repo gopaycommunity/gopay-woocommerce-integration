@@ -626,3 +626,11 @@ msgstr "Preskoči omejitev glede na državo za virtualne prenosljive izdelke."
 
 msgid "When enabled, the country restriction is ignored if all products in the cart are both virtual and downloadable."
 msgstr "Če je omogočeno, se omejitev glede na državo prezre, če so vsi izdelki v košarici hkrati virtualni in prenosljivi."
+
+
+msgid "Suspended"
+msgstr "Začasno ustavljena"
+
+
+msgid "This card has been suspended by your bank. You cannot pay with it, but you can delete it."
+msgstr "To kartico je začasno ustavila vaša banka. Z njo ne morete plačevati, lahko pa jo izbrišete."

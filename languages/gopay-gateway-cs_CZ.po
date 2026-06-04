@@ -609,3 +609,11 @@ msgstr "Přeskočit omezení podle země pro virtuální stahovatelné produkty.
 
 msgid "When enabled, the country restriction is ignored if all products in the cart are both virtual and downloadable."
 msgstr "Pokud je povoleno, omezení podle země se ignoruje, pokud jsou všechny produkty v košíku virtuální a zároveň ke stažení."
+
+
+msgid "Suspended"
+msgstr "Pozastavena"
+
+
+msgid "This card has been suspended by your bank. You cannot pay with it, but you can delete it."
+msgstr "Tato karta byla pozastavena vaší bankou. Nelze ji použít k platbě, ale můžete ji smazat."
