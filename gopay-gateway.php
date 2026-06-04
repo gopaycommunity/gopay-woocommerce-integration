@@ -18,7 +18,7 @@
  * License URI:          https://www.gnu.org/licenses/gpl-2.0.html
  * Domain Path:          /languages
  * WC requires at least: 7.0.0
- * WC tested up to:      10.5.0
+ * WC tested up to:      10.8.1
  * Requires Plugins:     woocommerce
  */
 
