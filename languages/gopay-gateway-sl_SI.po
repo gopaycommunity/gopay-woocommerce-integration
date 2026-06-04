@@ -614,3 +614,15 @@ msgstr "Nova kartica"
 
 msgid "Save this payment card to my account for future purchases."
 msgstr "Shrani to plačilno kartico v moj račun za prihodnje nakupe."
+
+
+msgid "Skip Country Restriction"
+msgstr "Preskoči omejitev glede na državo"
+
+
+msgid "Skip the country restriction for virtual downloadable products."
+msgstr "Preskoči omejitev glede na državo za virtualne prenosljive izdelke."
+
+
+msgid "When enabled, the country restriction is ignored if all products in the cart are both virtual and downloadable."
+msgstr "Če je omogočeno, se omejitev glede na državo prezre, če so vsi izdelki v košarici hkrati virtualni in prenosljivi."

@@ -617,3 +617,15 @@ msgstr "Novo cartão"
 
 msgid "Save this payment card to my account for future purchases."
 msgstr "Salvar este cartão de pagamento na minha conta para compras futuras."
+
+
+msgid "Skip Country Restriction"
+msgstr "Ignorar restrição de país"
+
+
+msgid "Skip the country restriction for virtual downloadable products."
+msgstr "Ignorar restrição de país para produtos virtuais para download."
+
+
+msgid "When enabled, the country restriction is ignored if all products in the cart are both virtual and downloadable."
+msgstr "Quando ativado, a restrição de país é ignorada se todos os produtos no carrinho forem ao mesmo tempo virtuais e para download."

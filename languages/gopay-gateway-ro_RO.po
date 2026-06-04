@@ -616,3 +616,15 @@ msgstr "Card nou"
 
 msgid "Save this payment card to my account for future purchases."
 msgstr "Salvează acest card de plată în contul meu pentru achiziții viitoare."
+
+
+msgid "Skip Country Restriction"
+msgstr "Ignoră restricția de țară"
+
+
+msgid "Skip the country restriction for virtual downloadable products."
+msgstr "Ignoră restricția de țară pentru produsele virtuale descărcabile."
+
+
+msgid "When enabled, the country restriction is ignored if all products in the cart are both virtual and downloadable."
+msgstr "Când este activat, restricția de țară este ignorată dacă toate produsele din coș sunt atât virtuale, cât și descărcabile."

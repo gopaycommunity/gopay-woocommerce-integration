@@ -613,3 +613,15 @@ msgstr "Nová karta"
 
 msgid "Save this payment card to my account for future purchases."
 msgstr "Uložiť platobnú kartu k môjmu účtu pre budúce nákupy."
+
+
+msgid "Skip Country Restriction"
+msgstr "Preskočiť obmedzenie podľa krajiny"
+
+
+msgid "Skip the country restriction for virtual downloadable products."
+msgstr "Preskočiť obmedzenie podľa krajiny pre virtuálne stiahnuteľné produkty."
+
+
+msgid "When enabled, the country restriction is ignored if all products in the cart are both virtual and downloadable."
+msgstr "Ak je povolené, obmedzenie podľa krajiny sa ignoruje, ak sú všetky produkty v košíku virtuálne a zároveň stiahnuteľné."

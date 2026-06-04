@@ -615,3 +615,15 @@ msgstr "Új kártya"
 
 msgid "Save this payment card to my account for future purchases."
 msgstr "Fizetési kártya mentése a fiókomhoz jövőbeli vásárlásokhoz."
+
+
+msgid "Skip Country Restriction"
+msgstr "Országkorlátozás kihagyása"
+
+
+msgid "Skip the country restriction for virtual downloadable products."
+msgstr "Virtuális letölthető termékek esetén az országkorlátozás kihagyása."
+
+
+msgid "When enabled, the country restriction is ignored if all products in the cart are both virtual and downloadable."
+msgstr "Ha engedélyezve van, az országkorlátozást a rendszer figyelmen kívül hagyja, ha a kosárban lévő összes termék egyszerre virtuális és letölthető."
