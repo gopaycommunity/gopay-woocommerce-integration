@@ -174,7 +174,8 @@ class Gopay_Gateway_API {
 
 					$card_details = $gopay->getCardDetails($card_id);
 
-					if ( isset( $card_details->statusCode ) && $card_details->statusCode == 200 ) {
+					if ( isset( $card_details->statusCode ) && $card_details->statusCode == 200
+					&& ( $card_details->json['status'] ?? 'ACTIVE' ) === 'ACTIVE' ) {
 						$payer['allowed_payment_instruments'] = ["PAYMENT_CARD"];
 						$payer['allowed_card_token'] = $card_details->json['card_token'];
 					}
@@ -543,6 +544,13 @@ class Gopay_Gateway_API {
 				$card_details = $gopay->getCardDetails( $card->card_id );
 
 				if ( isset( $card_details->statusCode ) && $card_details->statusCode == 200 ) {
+					$card_status = $card_details->json['status'] ?? 'ACTIVE';
+
+					if ( $card_status === 'DELETED' ) {
+						Gopay_Gateway_Log::delete_customer_card( $user_id, $card->card_id );
+						continue;
+					}
+
 					$card_exp_raw    = $card_details->json['card_expiration'] ?? '';
 
 					// Trim whitespace from expiration
@@ -550,7 +558,8 @@ class Gopay_Gateway_API {
 
 					$results[] = array(
 						'id'              => $card->id,
-						'card_id'		  => $card->card_id,
+						'card_id'         => $card->card_id,
+						'status'          => $card_status,
 						'real_masked_pan' => $card_details->json['real_masked_pan'] ?? '',
 						'card_brand'      => $card_details->json['card_brand'] ?? '',
 						'card_expiration' => $card_expiration,

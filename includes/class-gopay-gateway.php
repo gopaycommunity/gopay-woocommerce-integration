@@ -583,6 +583,7 @@ function init_gopay_gateway_gateway() {
 							__( 'If your account does not support this feature, checkout may fail and payments may become unavailable.', 'gopay-gateway' ) . '</div>',
 						'description' => __( 'When a customer pays by card, you can offer to save the card. In that case, a card token will be generated and can be used for future payments. If used, the customer will not have to enter the card details manually again.', 'gopay-gateway' ),
 						'desc_tip'    => true,
+						'default'  => 'no',
 					),
 				);
 			}
@@ -837,12 +838,15 @@ function init_gopay_gateway_gateway() {
 					// Add tokenize section
 					if ( 'PAYMENT_CARD' === $payment_method ) {
 						if ( $this->card_token && is_user_logged_in() ) {
-							$saved_cards = Gopay_Gateway_API::get_card_details();
+							$saved_cards    = Gopay_Gateway_API::get_card_details();
+							$checkout_cards = array_filter( $saved_cards, function( $c ) {
+								return ( $c['status'] ?? 'ACTIVE' ) === 'ACTIVE';
+							} );
 
 							$enabled_payment_methods .= '
 								<div class="payment_wc_tokenize_container" name="' . esc_attr( $payment_method ) . '">
 								<div class="payment_card_with_tokenize">
-									<input 
+									<input
 										class="payment_method_' . GOPAY_GATEWAY_ID . '_input"
 										name="gopay_payment_method"
 										type="radio"
@@ -853,11 +857,11 @@ function init_gopay_gateway_gateway() {
 									<span>' . esc_html__( 'Payment card', 'gopay-gateway' ) . '</span>
 									<img src="' . esc_url( $img ) . '" alt="ico" style="max-height: 60px; height: auto; width: auto; margin-left: auto;" />
 								</div>';
-						
+
 							$enabled_payment_methods .= '
 								<div class="card_selection_container" id="card_selection_container">';
 
-							if ( ! empty( $saved_cards ) ) {
+							if ( ! empty( $checkout_cards ) ) {
 								$enabled_payment_methods .= '
 									<div class="gopay-card-list" id="gopay-card-list">
 										<div class="gopay-card-list__title">
@@ -866,7 +870,7 @@ function init_gopay_gateway_gateway() {
 										<div class="gopay-card-options">';
 
 								$is_first_card = true;
-								foreach ( $saved_cards as $card ) {
+								foreach ( $checkout_cards as $card ) {
 									$card_art = ! empty( $card['card_art_url'] )
 										? '<img src="' . esc_url( $card['card_art_url'] ) . '" class="gopay-card-option__art" />'
 										: '';
@@ -1587,12 +1591,19 @@ function init_gopay_gateway_gateway() {
 		echo '<tbody>';
 
 		foreach ($saved_cards as $card) {
-			echo '<tr id="gopay-card-row-' . esc_attr($card['card_id']) . '">';
+			$is_suspended = ( $card['status'] ?? 'ACTIVE' ) === 'SUSPENDED';
+
+			echo '<tr id="gopay-card-row-' . esc_attr($card['card_id']) . '"' . ( $is_suspended ? ' class="gopay-card-row--suspended"' : '' ) . '>';
 			echo '<td data-label="Brand">';
 			if ( ! empty( $card['card_art_url'] ) ) {
-				echo '<img src="' . esc_url( $card['card_art_url'] ) . '" alt="' . esc_attr( $card['card_brand'] ) . '" class="gopay-card-art" />';
+				echo '<img src="' . esc_url( $card['card_art_url'] ) . '" alt="' . esc_attr( $card['card_brand'] ) . '" class="gopay-card-art' . ( $is_suspended ? ' gopay-card-art--suspended' : '' ) . '" />';
 			} else {
 				echo esc_html( $card['card_brand'] );
+			}
+			if ( $is_suspended ) {
+				echo '<span class="gopay-suspended-badge" aria-label="' . esc_attr__( 'This card has been suspended by your bank. You cannot pay with it, but you can delete it.', 'gopay-gateway' ) . '">'
+					. esc_html__( 'Suspended', 'gopay-gateway' )
+					. '</span>';
 			}
 			echo '</td>';
 			$short_pan = '****...' . substr( $card['real_masked_pan'], -4 );
@@ -1608,8 +1619,8 @@ function init_gopay_gateway_gateway() {
 
 			echo '<div id="gopay-delete-wrapper" class="gopay-delete-wrapper">';
 
-			echo '<button id="gopay-delete-card" class="gopay-delete-card" 
-					data-card-id="' . esc_attr($card['card_id']) . '" 
+			echo '<button id="gopay-delete-card" class="gopay-delete-card"
+					data-card-id="' . esc_attr($card['card_id']) . '"
 					data-nonce="' . esc_attr($nonce) . '">
 					'.esc_html__('Delete', 'gopay-gateway').'
 				</button>';
@@ -1617,8 +1628,8 @@ function init_gopay_gateway_gateway() {
 			echo '<div id="gopay-delete-confirm" class="gopay-delete-confirm" style="display:none;">
 					<span>'.esc_html__('Are you sure?', 'gopay-gateway').'</span>
 					<div>
-						<button id="gopay-confirm-yes" class="gopay-confirm-yes" 
-							data-card-id="' . esc_attr($card['card_id']) . '" 
+						<button id="gopay-confirm-yes" class="gopay-confirm-yes"
+							data-card-id="' . esc_attr($card['card_id']) . '"
 							data-nonce="' . esc_attr($nonce) . '">'.esc_html__('OK', 'gopay-gateway').'</button>
 						<button id="gopay-confirm-cancel" class="gopay-confirm-cancel">'.esc_html__('Cancel', 'gopay-gateway').'</button>
 					</div>

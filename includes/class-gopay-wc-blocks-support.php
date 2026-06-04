@@ -62,7 +62,10 @@ final class WC_Gopay_Blocks_Support extends AbstractPaymentMethodType {
 		$payment_methods_output = [];
 
 		// Get users stored cards from API
-		$saved_cards = Gopay_Gateway_API::get_card_details();
+		$saved_cards    = Gopay_Gateway_API::get_card_details();
+		$checkout_cards = array_values( array_filter( $saved_cards, function( $c ) {
+			return ( $c['status'] ?? 'ACTIVE' ) === 'ACTIVE';
+		} ) );
 
 		// Only supported by the currency.
 		$supported_payment_methods = $this->gateway->get_option(
@@ -127,7 +130,7 @@ final class WC_Gopay_Blocks_Support extends AbstractPaymentMethodType {
 			'description' => $this->get_setting('description'),
 			'supports' => $this->get_supported_features(),
 			'paymentMethods' => $payment_methods_output,
-			'savedCards' => $saved_cards,
+			'savedCards' => $checkout_cards,
 			'isTokenizeEnabled' => is_user_logged_in() && $this->gateway->get_option( 'card_token' ) === 'yes',
 		];
 	}
