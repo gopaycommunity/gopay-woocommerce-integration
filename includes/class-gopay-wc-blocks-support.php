@@ -58,6 +58,11 @@ final class WC_Gopay_Blocks_Support extends AbstractPaymentMethodType {
 	 *
 	 * @return array
 	 */
+	public function get_supported_features() {
+		$features = $this->gateway->supports;
+		return $features;
+	}
+
 	public function get_payment_method_data(){
 		$payment_methods_output = [];
 
@@ -94,8 +99,11 @@ final class WC_Gopay_Blocks_Support extends AbstractPaymentMethodType {
 		$banks = array_intersect_key((array) $supported_banks, array_flip((array) $selected_banks));
 
 		// Check if subscription - only card payment is enabled.
-		if (class_exists('Gopay_Gateway_Subscriptions') && Gopay_Gateway_Subscriptions::cart_contains_subscription()) {
-			if (array_key_exists('PAYMENT_CARD', (array) $payment_methods)) {
+		$cart_has_subscription = class_exists('Gopay_Gateway_Subscriptions') && Gopay_Gateway_Subscriptions::cart_contains_subscription();
+
+		if ( $cart_has_subscription ) {
+			$has_payment_card = array_key_exists('PAYMENT_CARD', (array) $payment_methods);
+			if ( $has_payment_card ) {
 				$payment_methods = array('PAYMENT_CARD' => $payment_methods['PAYMENT_CARD']);
 			} else {
 				$payment_methods = array();

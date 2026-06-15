@@ -193,8 +193,8 @@ const GoPayGateway = {
 	edit: createElement(GoPayMethodSelection),
 	canMakePayment: () => true,
 	ariaLabel: settings.title || i18n.gopay,
-	supports: settings.supports || {
-		features: ['products']
+	supports: {
+		features: settings.supports || ['products']
 	}
 };
 
