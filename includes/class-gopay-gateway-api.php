@@ -224,7 +224,7 @@ class Gopay_Gateway_API {
 		if ( ! empty( $end_date ) ) {
 			$data['recurrence'] = array(
 				'recurrence_cycle'   => 'ON_DEMAND',
-				'recurrence_date_to' => 0 != $end_date ? $end_date : gmdate( 'Y-m-d', strtotime( '+5 years' ) ),
+				'recurrence_date_to' => $end_date,
 			);
 		}
 

@@ -1076,7 +1076,7 @@ function init_gopay_gateway_gateway() {
 			$response = Gopay_Gateway_API::create_payment(
 				$gopay_payment_method,
 				$order,
-				! empty( $subscription ) ? $subscription->get_date( 'end' ) : '',
+				! empty( $subscription ) ? ( $subscription->get_date( 'end' ) ?: gmdate( 'Y-m-d', strtotime( '+5 years' ) ) ) : '',
 				$is_retry,
 				$request_card_token,
 				$card_id
