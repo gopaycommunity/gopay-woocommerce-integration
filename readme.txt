@@ -4,7 +4,7 @@ Tags: WooCommerce, GoPay
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 8.1
-Stable tag: 1.0.29
+Stable tag: 1.0.30
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,9 @@ After a successful payment, we send a notification about the change of the payme
 1 - WooCommerce Subscriptions must be installed if you need to deal with recurring payments.
 
 == Changelog ==
+
+= 1.0.30 =
+* Fixed timeout notification causing order status change
 
 = 1.0.29 =
 With latest plugin update we are introducing the following changes:
