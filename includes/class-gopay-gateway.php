@@ -731,14 +731,19 @@ function init_gopay_gateway_gateway() {
 						}
 					}
 				} else {
+					$rate_to_method = array();
+					foreach ( WC()->shipping()->get_packages() as $package ) {
+						foreach ( $package['rates'] ?? array() as $rate_id => $rate ) {
+							$rate_to_method[ $rate_id ] = $rate->get_method_id();
+						}
+					}
+
 					$chosen_shipping_methods = array();
-                    if ( ! empty( WC()->session->get( 'chosen_shipping_methods' ) ) ) {
-	                    foreach ( WC()->session->get( 'chosen_shipping_methods' ) as $key => $value ) {
-		                    if ( ! is_null( $value ) ) {
-			                    $chosen_shipping_methods[ $key ] = explode( ':', $value )[0];
-		                    }
-	                    }
-                    }
+					foreach ( (array) WC()->session->get( 'chosen_shipping_methods' ) as $key => $value ) {
+						if ( ! is_null( $value ) && isset( $rate_to_method[ $value ] ) ) {
+							$chosen_shipping_methods[ $key ] = $this->resolve_shipping_method_id( $rate_to_method[ $value ] );
+						}
+					}
 
 					if ( empty( $chosen_shipping_methods ) ||
 						array_diff( $chosen_shipping_methods, (array) $this->enable_shipping_methods )
@@ -750,6 +755,27 @@ function init_gopay_gateway_gateway() {
 			}
 
 			return parent::is_available();
+		}
+
+		/**
+		 * Resolve a method class ID to the method class ID stored in GoPay settings.
+		 *
+		 * @param string $method_id Method class ID from WC_Shipping_Rate::get_method_id().
+		 * @return string Method class ID matched against settings, or original if not found.
+		 */
+		private function resolve_shipping_method_id( string $method_id ): string {
+			if ( in_array( $method_id, (array) $this->enable_shipping_methods, true ) ) {
+				return $method_id;
+			}
+
+			foreach ( (array) $this->enable_shipping_methods as $enabled_id ) {
+				$suffix_pos = strrpos( $enabled_id, '_' );
+				if ( false !== $suffix_pos && substr( $enabled_id, 0, $suffix_pos ) === $method_id ) {
+					return $enabled_id;
+				}
+			}
+
+			return $method_id;
 		}
 
 		/**
