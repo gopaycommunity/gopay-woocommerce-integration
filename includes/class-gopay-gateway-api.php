@@ -465,7 +465,7 @@ class Gopay_Gateway_API {
 				// payment method to a bank transfer after abandoning the card payment).
 				// Without this check, a late TIMEOUTED notification from GoPay would
 				// overwrite a paid order back to "failed".
-				if ( $order->is_paid() ) {
+				if ( GOPAY_GATEWAY_ID !== $order->get_payment_method() || $order->is_paid() ) {
 					$order->add_order_note( sprintf(
 					/* translators: %s: GoPay payment state (e.g. TIMEOUTED). */
 						__( 'GoPay returned state "%s", but the order is already paid - status change skipped.', 'gopay-gateway' ),
