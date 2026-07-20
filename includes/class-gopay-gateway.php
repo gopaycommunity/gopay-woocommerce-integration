@@ -1039,6 +1039,43 @@ function init_gopay_gateway_gateway() {
 				);
 			}
 
+			// Duplicate-submit guard.
+			$existing_tx_id  = $order->get_meta( 'GoPay_Transaction_id' );
+			$last_created_at = (int) $order->get_meta( '_GoPay_payment_created_at' );
+			$dedupe_window   = (int) apply_filters( 'gopay_gateway_payment_dedupe_window', 30 );
+
+			if ( $existing_tx_id && $last_created_at && ( time() - $last_created_at ) < $dedupe_window ) {
+				$status          = Gopay_Gateway_API::get_status( $order_id );
+				$reusable_states = array( 'CREATED', 'PAYMENT_METHOD_CHOSEN', 'AUTHORIZED' );
+
+				if ( 200 === $status->statusCode
+					&& in_array( $status->json['state'] ?? '', $reusable_states, true )
+					&& ! empty( $status->json['gw_url'] ) ) {
+
+					Gopay_Gateway_Log::insert_log( array(
+						'order_id'       => $order_id,
+						'transaction_id' => $existing_tx_id,
+						'message'        => 'Duplicate process_payment - reusing existing GoPay payment',
+						'log_level'      => 'INFO',
+						'log'            => $status,
+					) );
+
+					$url_args     = array( 'gopay_url' => $status->json['gw_url'] );
+					$redirect_url = wc_get_checkout_url();
+					if ( ! empty( $_GET['pay_for_order'] ) && $_GET['pay_for_order'] === 'true' ) {
+						$url_args     = array_merge( $_GET, $url_args );
+						$redirect_url = wc_get_endpoint_url( 'order-pay' ) . $order_id . '/';
+					}
+
+					return array(
+						'result'   => 'success',
+						'redirect' => htmlspecialchars_decode(
+							wp_nonce_url( add_query_arg( $url_args, $redirect_url ), 'gw_url' )
+						),
+					);
+				}
+			}
+
 			// Check if total is equal to zero.
 			$subscription = Gopay_Gateway_Subscriptions::get_subscription_data( $order );
 			if ( $order->get_total() == 0 ) {
@@ -1142,6 +1179,7 @@ function init_gopay_gateway_gateway() {
 			// Add GoPay transaction id to order.
 			// $order->set_status('on-hold'); !
 			$order->update_meta_data( 'GoPay_Transaction_id', $response->json['id'] );
+			$order->update_meta_data( '_GoPay_payment_created_at', time() );
 			$order->save();
 
 			// Save log.
