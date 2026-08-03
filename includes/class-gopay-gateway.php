@@ -1047,6 +1047,8 @@ function init_gopay_gateway_gateway() {
 			) );
 
 			try {
+				$order->read_meta_data( true );
+
 				// Duplicate-submit guard.
 				$existing_tx_id  = $order->get_meta( 'GoPay_Transaction_id' );
 				$last_created_at = (int) $order->get_meta( '_GoPay_payment_created_at' );
