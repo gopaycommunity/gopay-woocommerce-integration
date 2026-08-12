@@ -731,18 +731,19 @@ function init_gopay_gateway_gateway() {
 						}
 					}
 				} else {
-					$rate_to_method = array();
-					foreach ( WC()->shipping()->get_packages() as $package ) {
-						foreach ( $package['rates'] ?? array() as $rate_id => $rate ) {
-							$rate_to_method[ $rate_id ] = $rate->get_method_id();
-						}
-					}
+					$chosen_rates   = (array) WC()->session->get( 'chosen_shipping_methods' );
+					$rate_to_method = $this->get_shipping_rate_method_map( array_keys( $chosen_rates ) );
 
 					$chosen_shipping_methods = array();
-					foreach ( (array) WC()->session->get( 'chosen_shipping_methods' ) as $key => $value ) {
-						if ( ! is_null( $value ) && isset( $rate_to_method[ $value ] ) ) {
-							$chosen_shipping_methods[ $key ] = $this->resolve_shipping_method_id( $rate_to_method[ $value ] );
+					foreach ( $chosen_rates as $key => $value ) {
+						if ( ! is_string( $value ) || '' === $value ) {
+							continue;
 						}
+
+						// Fallback to rate ID prefix when the rate is not among the known.
+						$method_id = $rate_to_method[ $value ] ?? current( explode( ':', $value ) );
+
+						$chosen_shipping_methods[ $key ] = $this->resolve_shipping_method_id( $method_id );
 					}
 
 					if ( empty( $chosen_shipping_methods ) ||
@@ -755,6 +756,42 @@ function init_gopay_gateway_gateway() {
 			}
 
 			return parent::is_available();
+		}
+
+		/**
+		 * Map shipping rate IDs to the class ID of the shipping method that created them.
+		 *
+		 * @param array $package_keys Package keys to read the cached rates for.
+		 * @return array<string, string> Rate ID => shipping method class ID.
+		 */
+		private function get_shipping_rate_method_map( array $package_keys ): array {
+			$rate_to_method = array();
+
+			foreach ( WC()->shipping()->get_packages() as $package ) {
+				foreach ( $package['rates'] ?? array() as $rate_id => $rate ) {
+					$rate_to_method[ $rate_id ] = $rate->get_method_id();
+				}
+			}
+
+			if ( ! empty( $rate_to_method ) || empty( WC()->session ) ) {
+				return $rate_to_method;
+			}
+
+			foreach ( $package_keys as $package_key ) {
+				$stored_rates = WC()->session->get( 'shipping_for_package_' . $package_key );
+
+				if ( empty( $stored_rates['rates'] ) || ! is_array( $stored_rates['rates'] ) ) {
+					continue;
+				}
+
+				foreach ( $stored_rates['rates'] as $rate_id => $rate ) {
+					if ( $rate instanceof WC_Shipping_Rate ) {
+						$rate_to_method[ $rate_id ] = $rate->get_method_id();
+					}
+				}
+			}
+
+			return $rate_to_method;
 		}
 
 		/**
