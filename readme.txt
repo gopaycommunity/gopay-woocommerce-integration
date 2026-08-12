@@ -4,7 +4,7 @@ Tags: WooCommerce, GoPay
 Requires at least: 5.8
 Tested up to: 7.0.3
 Requires PHP: 8.1
-Stable tag: 1.0.32
+Stable tag: 1.0.33
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,12 @@ After a successful payment, we send a notification about the change of the payme
 1 - WooCommerce Subscriptions must be installed if you need to deal with recurring payments.
 
 == Changelog ==
+
+= 1.0.33 =
+* Improve duplicate payment submission protection
+* Resolve shipping rate method mapping for WooCommerce 10.9.0+
+* Fix order cancellation condition for on-hold status
+* Declared compatibility with WooCommerce version 11.0.1 and WordPress version 7.0.3
 
 = 1.0.32 =
 * Declared compatibility with other shipping Wordpress plugins
