@@ -101,17 +101,17 @@
         },
         {
             "name": "gopay/payments-sdk-php",
-            "version": "1.11.0",
-            "version_normalized": "1.11.0.0",
+            "version": "1.11.1",
+            "version_normalized": "1.11.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gopaycommunity/gopay-php-api.git",
-                "reference": "044cea31d490f512a8549e34992d611125c6056b"
+                "reference": "129291d86c4d748c71f5987e34f425bf114381aa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gopaycommunity/gopay-php-api/zipball/044cea31d490f512a8549e34992d611125c6056b",
-                "reference": "044cea31d490f512a8549e34992d611125c6056b",
+                "url": "https://api.github.com/repos/gopaycommunity/gopay-php-api/zipball/129291d86c4d748c71f5987e34f425bf114381aa",
+                "reference": "129291d86c4d748c71f5987e34f425bf114381aa",
                 "shasum": ""
             },
             "require": {
@@ -123,9 +123,9 @@
                 "hamcrest/hamcrest-php": "*",
                 "phpspec/prophecy": "~1.0",
                 "phpspec/prophecy-phpunit": "^2.0",
-                "phpunit/phpunit": "9.3.7"
+                "phpunit/phpunit": "9.6.33"
             },
-            "time": "2026-04-08T10:35:37+00:00",
+            "time": "2026-04-16T11:00:16+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -159,7 +159,7 @@
             ],
             "support": {
                 "issues": "https://github.com/gopaycommunity/gopay-php-api/issues",
-                "source": "https://github.com/gopaycommunity/gopay-php-api/tree/1.11.0"
+                "source": "https://github.com/gopaycommunity/gopay-php-api/tree/1.11.1"
             },
             "install-path": "../gopay/payments-sdk-php"
         },
