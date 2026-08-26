@@ -395,10 +395,7 @@ class Gopay_Gateway_Options {
 			foreach ($enabled_shipping_methods as $shipping_method) {
 				// Check if the method is already added
 				if (!isset($all_enabled_shipping_methods[$shipping_method->id])) {
-					$all_enabled_shipping_methods[$shipping_method->id] = __(
-						$shipping_method->get_method_title(),
-						'gopay-gateway'
-					);
+					$all_enabled_shipping_methods[$shipping_method->id] = $shipping_method->get_method_title();
 				}
 			}
 		}
@@ -410,7 +407,7 @@ class Gopay_Gateway_Options {
 			$pickup_locations = get_option( 'pickup_location_pickup_locations', array() );
 
 			if ( ! empty( $pickup_locations ) && is_array( $pickup_locations ) ) {
-				$all_enabled_shipping_methods[$pickup_class->id] = __( $pickup_class->title, 'gopay-gateway' );
+				$all_enabled_shipping_methods[$pickup_class->id] = $pickup_class->title;
 			}
 		}
 

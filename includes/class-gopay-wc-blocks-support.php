@@ -117,7 +117,7 @@ final class WC_Gopay_Blocks_Support extends AbstractPaymentMethodType {
 						foreach ($banks as $bank_code => $bank_details) {
 							$payment_methods_output[] = [
 								'id' => $bank_code,
-								'label' => __($bank_details['label'] ?? $bank_code, 'gopay-gateway'),
+								'label' => $bank_details['label'] ?? $bank_code,
 								'image' => $bank_details['image'] ?? '',
 							];
 						}
@@ -127,7 +127,7 @@ final class WC_Gopay_Blocks_Support extends AbstractPaymentMethodType {
 
 				$payment_methods_output[] = [
 					'id' => $payment_method_code,
-					'label' => __($payment_method_details['label'] ?? $payment_method_code, 'gopay-gateway'),
+					'label' => $payment_method_details['label'] ?? $payment_method_code,
 					'image' => $payment_method_details['image'] ?? '',
 				];
 			}
