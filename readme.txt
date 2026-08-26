@@ -4,7 +4,7 @@ Tags: WooCommerce, GoPay
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.0.34
+Stable tag: 1.0.35
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,12 @@ After a successful payment, we send a notification about the change of the payme
 1 - WooCommerce Subscriptions must be installed if you need to deal with recurring payments.
 
 == Changelog ==
+
+= 1.0.35 =
+* Fix authenticated SQL injection in log admin view (CVE-2026-75959)
+* Resolve Plugin Check security and i18n findings in gateway class
+* Add direct file access protection to PHP files
+* Fix i18n and remove translation calls on non-literal text
 
 = 1.0.34 =
 * Update Composer dependencies to latest stable versions
