@@ -9,6 +9,8 @@
  * @since     1.0.0
  */
 
+defined( 'ABSPATH' ) || exit;
+
 $plugin_data  = get_plugin_data( GOPAY_GATEWAY_FULLPATH );
 $settings_url = admin_url( 'admin.php?page=wc-settings&tab=checkout&section=' . GOPAY_GATEWAY_ID );
 ?>

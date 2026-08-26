@@ -5,6 +5,8 @@
  * @package GoPay gateway
  */
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Check if plugin is active
  *
