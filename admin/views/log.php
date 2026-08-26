@@ -9,17 +9,22 @@
  * @since     1.0.0
  */
 
-$pagenum          = filter_input( INPUT_GET, 'pagenum', FILTER_VALIDATE_INT );
-$log_table_filter = filter_input( INPUT_GET, 'log_table_filter' );
+defined( 'ABSPATH' ) || exit;
+
+$pagenum          = isset( $_GET['pagenum'] ) ? absint( wp_unslash( $_GET['pagenum'] ) ) : 0;
+$log_table_filter = isset( $_GET['log_table_filter'] )
+	? sanitize_text_field( wp_unslash( $_GET['log_table_filter'] ) )
+	: '';
 
 global $wpdb;
+$log_table = $wpdb->prefix . GOPAY_GATEWAY_LOG_TABLE_NAME;
+$like      = '%' . $wpdb->esc_like( strtoupper( $log_table_filter ) ) . '%';
+
 $rows = $wpdb->get_results(
-	sprintf(
-		"SELECT COUNT(*) as num_rows FROM %s%s WHERE UPPER(CONCAT(order_id, transaction_id, message, created_at, log_level, log))
-                REGEXP '[\w\W]*%s[\w\W]*'",
-		$wpdb->prefix,
-		GOPAY_GATEWAY_LOG_TABLE_NAME,
-        $log_table_filter !== null ? strtoupper($log_table_filter) : null
+	$wpdb->prepare(
+		"SELECT COUNT(*) as num_rows FROM {$log_table}
+                WHERE UPPER(CONCAT(order_id, transaction_id, message, created_at, log_level, log)) LIKE %s",
+		$like
 	)
 );
 
@@ -27,18 +32,17 @@ $results_per_page = 20;
 $number_of_rows   = $rows[0]->num_rows;
 $number_of_pages  = ceil( $number_of_rows / $results_per_page );
 
-if ( null === $pagenum || false === $pagenum ) {
+if ( $pagenum < 1 ) {
 	$pagenum = 1;
 }
 
 $page_pagination = ( $pagenum - 1 ) * $results_per_page;
 $log_data        = $page_pagination >= 0 ? $wpdb->get_results(
-	sprintf(
-		"SELECT * FROM %s%s WHERE UPPER(CONCAT(order_id, transaction_id, message, created_at, log_level, log))
-                REGEXP '[\w\W]*%s[\w\W]*' ORDER BY created_at DESC LIMIT %d,%d",
-		$wpdb->prefix,
-		GOPAY_GATEWAY_LOG_TABLE_NAME,
-		$log_table_filter !== null ? strtoupper($log_table_filter) : null,
+	$wpdb->prepare(
+		"SELECT * FROM {$log_table}
+                WHERE UPPER(CONCAT(order_id, transaction_id, message, created_at, log_level, log)) LIKE %s
+                ORDER BY created_at DESC LIMIT %d,%d",
+		$like,
 		$page_pagination,
 		$results_per_page
 	)
@@ -101,7 +105,7 @@ $log_data        = $page_pagination >= 0 ? $wpdb->get_results(
 		<form action="">
 			<label for="page"></label>
 			<input type="hidden" id="page" name="page" value="gopay-gateway-menu-log">
-			<label for="log_table_filter"><?php _e( 'Filter table by any column:', 'gopay-gateway' ); ?></label>
+			<label for="log_table_filter"><?php esc_html_e( 'Filter table by any column:', 'gopay-gateway' ); ?></label>
 			<input type="text" id="log_table_filter" name="log_table_filter"
 				   placeholder="<?php echo wp_kses_post( __( 'Search here', 'gopay-gateway' ) ); ?>">
 			<input type="submit" value="<?php echo wp_kses_post( __( 'Search', 'gopay-gateway' ) ); ?>">
