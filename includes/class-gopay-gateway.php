@@ -10,6 +10,8 @@
  * @since     1.0.0
  */
 
+defined( 'ABSPATH' ) || exit;
+
 add_action( 'plugins_loaded', 'init_gopay_gateway_gateway' );
 
 /**
@@ -65,8 +67,8 @@ function init_gopay_gateway_gateway() {
 				GOPAY_GATEWAY_URL . 'includes/assets/images/gopay.png'
 			);
 			$this->has_fields         = false;
-			$this->method_title       = 'GoPay payment gateway';
-			$this->method_description = 'Take payments via GoPay payment gateway.';
+			$this->method_title       = __( 'GoPay payment gateway', 'gopay-gateway' );
+			$this->method_description = __( 'Take payments via GoPay payment gateway.', 'gopay-gateway' );
 
 			$this->enable_currencies          = Gopay_Gateway_Options::supported_currencies();
 			$this->supported_languages        = Gopay_Gateway_Options::supported_languages();
@@ -151,11 +153,11 @@ function init_gopay_gateway_gateway() {
 		}
 		
 		public function get_method_title() {
-			return __( $this->method_title, 'gopay-gateway' ); 
+			return $this->method_title; 
 		}
 
 		public function get_method_description() {
-			return __( $this->method_description, 'gopay-gateway' );
+			return $this->method_description;
 		}
 
 		public function get_simplified_bank_selection() {
@@ -283,18 +285,16 @@ function init_gopay_gateway_gateway() {
 					'client_id'     => array(
 						'title'       => __( 'Client ID', 'gopay-gateway' ),
 						'type'        => 'text',
-						'description' => __(
-							sprintf(
-								__(
-									'Enter your client ID, which can be found in your GoPay account settings.'
-									. ' %1$sMore information%2$s.',
-									'gopay-gateway'
-								),
-								'<a href="https://help.gopay.com/en/knowledge-base/gopay-account/' .
-								'gopay-business-account/signing-in-password-reset-activating-and-deactivating' .
-								'-the-payment-gateway/how-to-activate-the-payment-gateway">',
-								'</a>'
-							)
+						'description' => sprintf(
+							/* translators: %1$s: opening HTML anchor tag for the "More information" link, %2$s: closing HTML anchor tag */
+							__(
+								'Enter your client ID, which can be found in your GoPay account settings. %1$sMore information%2$s.',
+								'gopay-gateway'
+							),
+							'<a href="https://help.gopay.com/en/knowledge-base/gopay-account/' .
+							'gopay-business-account/signing-in-password-reset-activating-and-deactivating' .
+							'-the-payment-gateway/how-to-activate-the-payment-gateway">',
+							'</a>'
 						),
 						'css'         => 'width: 500px;',
 						'placeholder' => __( 'Insert Your GoPay Client ID...', 'gopay-gateway' ),
@@ -302,18 +302,16 @@ function init_gopay_gateway_gateway() {
 					'client_secret' => array(
 						'title'       => __( 'Client Secret', 'gopay-gateway' ),
 						'type'        => 'text',
-						'description' => __(
-							sprintf(
-								__(
-									'Enter your Client Secret Token, which can be found in your GoPay account settings.'
-									. ' %1$sMore information%2$s.',
-									'gopay-gateway'
-								),
-								'<a href="https://help.gopay.com/en/knowledge-base/gopay-account/' .
-								'gopay-business-account/signing-in-password-reset-activating-and-deactivating' .
-								'-the-payment-gateway/how-to-activate-the-payment-gateway">',
-								'</a>'
-							)
+						'description' => sprintf(
+							/* translators: %1$s: opening HTML anchor tag for the "More information" link, %2$s: closing HTML anchor tag */
+							__(
+								'Enter your Client Secret Token, which can be found in your GoPay account settings. %1$sMore information%2$s.',
+								'gopay-gateway'
+							),
+							'<a href="https://help.gopay.com/en/knowledge-base/gopay-account/' .
+							'gopay-business-account/signing-in-password-reset-activating-and-deactivating' .
+							'-the-payment-gateway/how-to-activate-the-payment-gateway">',
+							'</a>'
 						),
 						'css'         => 'width: 500px;',
 						'placeholder' => __( 'Insert Your GoPay Client Secret Token...', 'gopay-gateway' ),
@@ -321,18 +319,16 @@ function init_gopay_gateway_gateway() {
 					'goid'          => array(
 						'title'       => __( 'GoID', 'gopay-gateway' ),
 						'type'        => 'text',
-						'description' => __(
-							sprintf(
-								__(
-									'Enter your unique GoID, which can be found in your GoPay account settings.'
-									. ' %1$sMore information%2$s.',
-									'gopay-gateway'
-								),
-								'<a href="https://help.gopay.com/en/knowledge-base/gopay-account/' .
-								'gopay-business-account/signing-in-password-reset-activating-and-deactivating' .
-								'-the-payment-gateway/how-to-activate-the-payment-gateway">',
-								'</a>'
-							)
+						'description' => sprintf(
+							/* translators: %1$s: opening HTML anchor tag for the "More information" link, %2$s: closing HTML anchor tag */
+							__(
+								'Enter your unique GoID, which can be found in your GoPay account settings. %1$sMore information%2$s.',
+								'gopay-gateway'
+							),
+							'<a href="https://help.gopay.com/en/knowledge-base/gopay-account/' .
+							'gopay-business-account/signing-in-password-reset-activating-and-deactivating' .
+							'-the-payment-gateway/how-to-activate-the-payment-gateway">',
+							'</a>'
 						),
 						'css'         => 'width: 500px;',
 						'placeholder' => __( 'Insert Your GoID...', 'gopay-gateway' ),
@@ -408,18 +404,16 @@ function init_gopay_gateway_gateway() {
 					'client_id'                        => array(
 						'title'       => __( 'Client ID', 'gopay-gateway' ),
 						'type'        => 'text',
-						'description' => __(
-							sprintf(
-								__(
-									'Enter your client ID, which can be found in your GoPay account settings.'
-									. ' %1$sMore information%2$s.',
-									'gopay-gateway'
-								),
-								'<a href="https://help.gopay.com/en/knowledge-base/gopay-account/' .
-								'gopay-business-account/signing-in-password-reset-activating-and-deactivating' .
-								'-the-payment-gateway/how-to-activate-the-payment-gateway">',
-								'</a>'
-							)
+						'description' => sprintf(
+							/* translators: %1$s: opening HTML anchor tag for the "More information" link, %2$s: closing HTML anchor tag */
+							__(
+								'Enter your client ID, which can be found in your GoPay account settings. %1$sMore information%2$s.',
+								'gopay-gateway'
+							),
+							'<a href="https://help.gopay.com/en/knowledge-base/gopay-account/' .
+							'gopay-business-account/signing-in-password-reset-activating-and-deactivating' .
+							'-the-payment-gateway/how-to-activate-the-payment-gateway">',
+							'</a>'
 						),
 						'css'         => 'width: 500px;',
 						'placeholder' => __( 'Insert Your GoPay Client ID...', 'gopay-gateway' ),
@@ -427,18 +421,16 @@ function init_gopay_gateway_gateway() {
 					'client_secret'                    => array(
 						'title'       => __( 'Client Secret', 'gopay-gateway' ),
 						'type'        => 'text',
-						'description' => __(
-							sprintf(
-								__(
-									'Enter your Client Secret Token, which can be found in your GoPay account settings.'
-									. ' %1$sMore information%2$s.',
-									'gopay-gateway'
-								),
-								'<a href="https://help.gopay.com/en/knowledge-base/gopay-account/' .
-								'gopay-business-account/signing-in-password-reset-activating-and-deactivating' .
-								'-the-payment-gateway/how-to-activate-the-payment-gateway">',
-								'</a>'
-							)
+						'description' => sprintf(
+							/* translators: %1$s: opening HTML anchor tag for the "More information" link, %2$s: closing HTML anchor tag */
+							__(
+								'Enter your Client Secret Token, which can be found in your GoPay account settings. %1$sMore information%2$s.',
+								'gopay-gateway'
+							),
+							'<a href="https://help.gopay.com/en/knowledge-base/gopay-account/' .
+							'gopay-business-account/signing-in-password-reset-activating-and-deactivating' .
+							'-the-payment-gateway/how-to-activate-the-payment-gateway">',
+							'</a>'
 						),
 						'css'         => 'width: 500px;',
 						'placeholder' => __( 'Insert Your GoPay Client Secret Token...', 'gopay-gateway' ),
@@ -446,18 +438,16 @@ function init_gopay_gateway_gateway() {
 					'goid'                             => array(
 						'title'       => __( 'GoID', 'gopay-gateway' ),
 						'type'        => 'text',
-						'description' => __(
-							sprintf(
-								__(
-									'Enter your unique GoID, which can be found in your GoPay account settings.'
-									. ' %1$sMore information%2$s.',
-									'gopay-gateway'
-								),
-								'<a href="https://help.gopay.com/en/knowledge-base/gopay-account/' .
-								'gopay-business-account/signing-in-password-reset-activating-and-deactivating' .
-								'-the-payment-gateway/how-to-activate-the-payment-gateway">',
-								'</a>'
-							)
+						'description' => sprintf(
+							/* translators: %1$s: opening HTML anchor tag for the "More information" link, %2$s: closing HTML anchor tag */
+							__(
+								'Enter your unique GoID, which can be found in your GoPay account settings. %1$sMore information%2$s.',
+								'gopay-gateway'
+							),
+							'<a href="https://help.gopay.com/en/knowledge-base/gopay-account/' .
+							'gopay-business-account/signing-in-password-reset-activating-and-deactivating' .
+							'-the-payment-gateway/how-to-activate-the-payment-gateway">',
+							'</a>'
 						),
 						'css'         => 'width: 500px;',
 						'placeholder' => __( 'Insert Your GoID...', 'gopay-gateway' ),
@@ -478,8 +468,7 @@ function init_gopay_gateway_gateway() {
 						'class'       => 'chosen_select',
 						'options'     => $this->supported_languages,
 						'description' => __(
-							'Default language is used when a customer of an e-commerce site' .
-							' is from a country whose language is not supported.',
+							'Default language is used when a customer of an e-commerce site is from a country whose language is not supported.',
 							'gopay-gateway'
 						),
 						'desc_tip'    => true,
@@ -535,9 +524,7 @@ function init_gopay_gateway_gateway() {
 							'gopay-gateway'
 						),
 						'description' => __(
-							'If enabled, customers cannot choose any specific bank at the checkout,' .
-							' they are grouped into one “Bank account” option,' .
-							' but they have to select the bank once the GoPay payment gateway is invoked.',
+							'If enabled, customers cannot choose any specific bank at the checkout, they are grouped into one “Bank account” option, but they have to select the bank once the GoPay payment gateway is invoked.',
 							'gopay-gateway'
 						),
 						'desc_tip'    => true,
@@ -582,8 +569,7 @@ function init_gopay_gateway_gateway() {
 							'gopay-gateway'
 						),
 						'description' => __(
-							'If enabled, payment retry of a failed payment will be done using the same payment method' .
-							' that was selected when customer was placing an order.',
+							'If enabled, payment retry of a failed payment will be done using the same payment method that was selected when customer was placing an order.',
 							'gopay-gateway'
 						),
 						'desc_tip'    => true,
@@ -621,7 +607,7 @@ function init_gopay_gateway_gateway() {
 
 				$gateway_url = esc_js( esc_url_raw( $get['gopay_url'] ) );
 
-				$inline_js = <<<JS
+				$inline_js = "
 				(function(){
 					// prevent double-init across multiple inline injections
 					if (window.__gopay_init_done) return;
@@ -631,7 +617,7 @@ function init_gopay_gateway_gateway() {
 
 						if (typeof _gopay !== 'undefined' && typeof _gopay.checkout === 'function' && document.body) {
 							try {
-								_gopay.checkout({gatewayUrl: "{$gateway_url}", inline: true});
+								_gopay.checkout({gatewayUrl: \"{$gateway_url}\", inline: true});
 							} catch (e) {
 								if (window.console && console.error) console.error('gopay checkout error', e);
 							}
@@ -649,7 +635,7 @@ function init_gopay_gateway_gateway() {
 						initGoPay();
 					}
 				})();
-				JS;
+				";
 
 				// Attach to the SDK handle so WP prints it immediately
 				add_action( 'wp_enqueue_scripts', function() use ( $inline_js ) {
@@ -659,7 +645,7 @@ function init_gopay_gateway_gateway() {
 				//  Fallback - print in footer for themes that handle enqueues unexpectedly.
 				//	Late priority - after most other footer work.
 				add_action( 'wp_footer', function() use ( $inline_js ) {
-				echo '<script id="gopay-inline-fallback">' . $inline_js . '</script>';
+					wp_print_inline_script_tag( $inline_js, array( 'id' => 'gopay-inline-fallback' ) );
 				}, 999 );
 			}
 			// end Inline.
@@ -896,7 +882,7 @@ function init_gopay_gateway_gateway() {
 					if ( 'BANK_ACCOUNT' === $payment_method ) {
 						if ( ! $this->simplified_bank_selection ) {
 							foreach ( $banks as $bank => $bank_label_image ) {
-								$span = __( $bank_label_image['label'], 'gopay-gateway' );
+								$span = $bank_label_image['label'];
 								$img  = array_key_exists( 'image', $bank_label_image ) ?
 									$bank_label_image['image'] : '';
 
@@ -914,7 +900,7 @@ function init_gopay_gateway_gateway() {
 						}
 					}
 
-					$span = __( $payment_method_label_image['label'], 'gopay-gateway' );
+					$span = $payment_method_label_image['label'];
 					$img  = array_key_exists( 'image', $payment_method_label_image ) ?
 						$payment_method_label_image['image'] : '';
 
@@ -1396,10 +1382,11 @@ function init_gopay_gateway_gateway() {
 		public function thankyou_order_failed_text( int $order_id ) {
 			$order = new WC_Order( $order_id );
 			if ( $order->has_status( 'failed' ) ) {
-				$message = __(
-					esc_attr( 'Unfortunately your order cannot be processed as the payment was not completed.'
-					. ' Please attempt the payment or your purchase again.' ),
-					'gopay-gateway'
+				$message = esc_attr(
+					__(
+						'Unfortunately your order cannot be processed as the payment was not completed. Please attempt the payment or your purchase again.',
+						'gopay-gateway'
+					)
 				);
 
 				?>
@@ -1606,9 +1593,12 @@ function init_gopay_gateway_gateway() {
 
 			foreach ( $orders as $key => $order ) {
 				global $wpdb;
+				$log_table = $wpdb->prefix . GOPAY_GATEWAY_LOG_TABLE_NAME;
 				$wpdb->query(
-					'DELETE FROM ' . $wpdb->prefix . GOPAY_GATEWAY_LOG_TABLE_NAME . ' WHERE order_id = ' .
-					$order->get_id()
+					$wpdb->prepare(
+						"DELETE FROM {$log_table} WHERE order_id = %d",
+						$order->get_id()
+					)
 				);
 			}
 		}
@@ -1622,9 +1612,12 @@ function init_gopay_gateway_gateway() {
 		 */
 		public function delete_order_logs( int $order_id ) {
 			global $wpdb;
+			$log_table = $wpdb->prefix . GOPAY_GATEWAY_LOG_TABLE_NAME;
 			$wpdb->query(
-				'DELETE FROM ' . $wpdb->prefix . GOPAY_GATEWAY_LOG_TABLE_NAME . ' WHERE order_id = ' .
-				$order_id
+				$wpdb->prepare(
+					"DELETE FROM {$log_table} WHERE order_id = %d",
+					$order_id
+				)
 			);
 		}
 
