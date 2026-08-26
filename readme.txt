@@ -2,7 +2,7 @@
 Contributors: GoPay
 Tags: WooCommerce, GoPay
 Requires at least: 5.8
-Tested up to: 7.1.0
+Tested up to: 7.1
 Requires PHP: 8.1
 Stable tag: 1.0.34
 License: GPLv2 or later

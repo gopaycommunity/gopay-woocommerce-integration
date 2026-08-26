@@ -172,7 +172,7 @@ function gopay_handle_review_dismiss() {
 		$data['reviewed'] = true;
 		update_option( 'gopay_review_dismiss', $data );
 
-		wp_redirect( 'https://wordpress.org/support/plugin/gopay-gateway/reviews/?filter=5#new-post' );
+		wp_redirect( 'https://wordpress.org/support/plugin/gopay-gateway/reviews/#new-post' );
 		exit;
 	}
 }
