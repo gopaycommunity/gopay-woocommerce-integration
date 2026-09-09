@@ -285,44 +285,96 @@ class Gopay_Gateway_API {
 	}
 
 	/**
-	 * GoPay get enabled payments methods
+	 * Pick a localised label from the GoPay API response.
 	 *
-	 * @param string $currency Currency.
+	 * GoPay returns labels as a map of language code => text and only
+	 * includes the languages it has available, so the requested language
+	 * is not guaranteed to be present.
 	 *
-	 * @return array
-	 * @since  1.0.0
+	 * @param array  $labels    Map of language code => label as returned by GoPay.
+	 * @param string $preferred Preferred language code (lowercase).
+	 *
+	 * @return string Label in the preferred language, or the closest available fallback.
+	 * @since  1.0.36
 	 */
-	public static function get_enabled_payment_methods( string $currency ): array {
-		$options          = get_option( 'woocommerce_' . GOPAY_GATEWAY_ID . '_settings' );
-		$gopay            = self::auth_gopay( $options );
-		$enabled_payments = $gopay->getPaymentInstruments( $options['goid'], $currency );
+	private static function pick_label( array $labels, string $preferred ): string {
+		$candidates = array(
+			$preferred,
+			strtolower( GoPay\Definition\Language::CZECH ),
+			strtolower( GoPay\Definition\Language::ENGLISH ),
+		);
 
-		$payment_instruments = array();
-		if ( 200 == $enabled_payments->statusCode ) {
-			foreach ( $enabled_payments->json['enabledPaymentInstruments'] as $key => $payment_method ) {
-				if ( 'BANK_ACCOUNT' === $payment_method['paymentInstrument'] ) {
-					$payment_instruments[ $payment_method['paymentInstrument'] ] = array(
-						'label'  => $payment_method['label']['cs'],
-						'image'  => $payment_method['image']['normal'],
-						'swifts' => array(),
-					);
-					$enabled_swifts = $payment_method['enabledSwifts'];
-					foreach ( $enabled_swifts as $bank ) {
-						$payment_instruments[ $payment_method['paymentInstrument'] ]['swifts'][ $bank['swift'] ] = array(
-							'label' => $bank['label']['cs'],
-							'image' => $bank['image']['normal'],
-						);
-					}
-				} else {
-					$payment_instruments[ $payment_method['paymentInstrument'] ] = array(
-						'label' => $payment_method['label']['cs'],
-						'image' => $payment_method['image']['normal'],
-					);
-				}
+		foreach ( $candidates as $code ) {
+			if ( ! empty( $labels[ $code ] ) && is_string( $labels[ $code ] ) ) {
+				return $labels[ $code ];
 			}
 		}
 
-		return $payment_instruments;
+		foreach ( $labels as $label ) {
+			if ( ! empty( $label ) && is_string( $label ) ) {
+				return $label;
+			}
+		}
+
+		return '';
+	}
+
+	/**
+	 * Extract payment methods and banks from the GoPay API response.
+	 *
+	 * Every key of the response is treated as optional: GoPay omits keys that are
+	 * not relevant for the given entry instead of sending them empty. Most notably
+	 * enabledSwifts is missing whenever no bank is assigned to the currency.
+	 *
+	 * @param mixed  $instruments   Value of enabledPaymentInstruments from the API response.
+	 * @param string $language_code Preferred language code (lowercase).
+	 *
+	 * @return array Array with the payment methods and the banks.
+	 * @since  1.0.36
+	 */
+	private static function parse_payment_instruments( $instruments, string $language_code ): array {
+		$payment_methods = array();
+		$banks           = array();
+
+		if ( ! is_array( $instruments ) ) {
+			return array( $payment_methods, $banks );
+		}
+
+		foreach ( $instruments as $payment_method ) {
+			if ( ! is_array( $payment_method ) || empty( $payment_method['paymentInstrument'] ) ) {
+				continue;
+			}
+
+			$payment_methods[ $payment_method['paymentInstrument'] ] = array(
+				'label' => self::pick_label( (array) ( $payment_method['label'] ?? array() ), $language_code ),
+				'image' => $payment_method['image']['normal'] ?? '',
+			);
+
+			if ( 'BANK_ACCOUNT' !== $payment_method['paymentInstrument'] ) {
+				continue;
+			}
+
+			// The enabledSwifts key is nullable and is omitted entirely when no
+			// bank is assigned to the currency on the GoPay account.
+			$enabled_swifts = $payment_method['enabledSwifts'] ?? array();
+			if ( ! is_array( $enabled_swifts ) ) {
+				$enabled_swifts = array();
+			}
+
+			foreach ( $enabled_swifts as $bank ) {
+				if ( ! is_array( $bank ) || empty( $bank['swift'] ) ) {
+					continue;
+				}
+
+				$banks[ $bank['swift'] ] = array(
+					'label'   => self::pick_label( (array) ( $bank['label'] ?? array() ), $language_code ),
+					'country' => 'OTHERS' !== $bank['swift'] ? substr( $bank['swift'], 4, 2 ) : '',
+					'image'   => $bank['image']['normal'] ?? '',
+				);
+			}
+		}
+
+		return array( $payment_methods, $banks );
 	}
 
 	/**
@@ -346,34 +398,16 @@ class Gopay_Gateway_API {
 			$language_code = strtolower( GoPay\Definition\Language::ENGLISH );
 		}
 
-		$payment_methods  = array();
-		$banks            = array();
 		$enabled_payments = $gopay->getPaymentInstruments( $options['goid'], $currency . '?lang=' . $language_code );
 
-		if ( 200 == $enabled_payments->statusCode && isset( $enabled_payments->json['enabledPaymentInstruments'] ) ) {
-			// Determine if the specified language code exists in the response
-			$paymentInstrument = reset( $enabled_payments->json['enabledPaymentInstruments'] );
-			$language_code     = isset( $paymentInstrument['label'][ $language_code ] ) ? $language_code : strtolower( GoPay\Definition\Language::CZECH );
-
-			foreach ( $enabled_payments->json['enabledPaymentInstruments'] as $key => $payment_method ) {
-				$payment_methods[ $payment_method['paymentInstrument'] ] = array(
-					'label' => $payment_method['label'][ $language_code ],
-					'image' => $payment_method['image']['normal'],
-				);
-
-				if ( 'BANK_ACCOUNT' === $payment_method['paymentInstrument'] ) {
-					foreach ( $payment_method['enabledSwifts'] as $bank ) {
-						$banks[ $bank['swift'] ] = array(
-							'label'   => $bank['label'][ $language_code ],
-							'country' => 'OTHERS' !== $bank['swift'] ? substr( $bank['swift'], 4, 2 ) : '',
-							'image'   => $bank['image']['normal'],
-						);
-					}
-				}
-			}
+		if ( ! $enabled_payments instanceof Response || 200 != $enabled_payments->statusCode ) {
+			return array( array(), array() );
 		}
 
-		return array( $payment_methods, $banks );
+		return self::parse_payment_instruments(
+			$enabled_payments->json['enabledPaymentInstruments'] ?? null,
+			$language_code
+		);
 	}
 
 	/**
