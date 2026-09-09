@@ -650,12 +650,19 @@ function init_gopay_gateway_gateway() {
 			}
 			// end Inline.
 
+			if ( ! did_action( 'wp_loaded' )
+				|| ! WC()->cart instanceof WC_Cart
+				|| ! WC()->customer instanceof WC_Customer
+			) {
+				return parent::is_available();
+			}
+
 			if ( ! empty( WC()->customer ) ) {
 				// Check if all products are virtual and/or downloadable.
 				$all_virtual_downloadable = true;
 				$all_virtual              = true;
 
-				foreach ( WC()->cart->get_cart() as $item ) {
+				foreach ( WC()->cart->get_cart_contents() as $item ) {
 					$product = $item['data'];
 					if ( ! $product->is_virtual() ) {
 						$all_virtual = false;
@@ -717,7 +724,9 @@ function init_gopay_gateway_gateway() {
 						}
 					}
 				} else {
-					$chosen_rates   = (array) WC()->session->get( 'chosen_shipping_methods' );
+					$chosen_rates   = ! empty( WC()->session )
+						? (array) WC()->session->get( 'chosen_shipping_methods' )
+						: array();
 					$rate_to_method = $this->get_shipping_rate_method_map( array_keys( $chosen_rates ) );
 
 					$chosen_shipping_methods = array();
