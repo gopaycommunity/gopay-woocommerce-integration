@@ -4,7 +4,7 @@ Tags: WooCommerce, GoPay
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.0.35
+Stable tag: 1.0.36
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -90,6 +90,11 @@ After a successful payment, we send a notification about the change of the payme
 
 == Changelog ==
 
+= 1.0.36 =
+* Fix PHP warnings on the settings page when bank transfer is enabled for a currency with no banks assigned in the GoPay account
+* Resolve WPML compatibility issue caused by the cart being accessed before WooCommerce is fully loaded
+* Declared compatibility with WooCommerce version 11.1.0
+
 = 1.0.35 =
 * Fix authenticated SQL injection in log admin view (CVE-2026-75959)
 * Resolve Plugin Check security and i18n findings in gateway class
@@ -118,13 +123,13 @@ After a successful payment, we send a notification about the change of the payme
 = 1.0.29 =
 With latest plugin update we are introducing the following changes:
 * New Feature: Saved Payment Cards
-Customers can now store and manage their payment cards directly within the checkout process, eliminating the need to manually enter card details on every purchase.
-This feature can be enabled in the plugin settings. Please note that your GoPay merchant account must support this functionality before enabling it.
+  * Customers can now store and manage their payment cards directly within the checkout process, eliminating the need to manually enter card details on every purchase.
+  * This feature can be enabled in the plugin settings. Please note that your GoPay merchant account must support this functionality before enabling it.
 * New Feature: Global Sales for Virtual & Downloadable Products
-Virtual and downloadable products can now be sold without any country restrictions, making them available to customers worldwide.
-This option can be enabled in the plugin settings.
+  * Virtual and downloadable products can now be sold without any country restrictions, making them available to customers worldwide.
+  * This option can be enabled in the plugin settings.
 * Compatibility Updates
-The release adds support for the latest WordPress version 7.0 and WooCommerce version 10.8.1.
+  * The release adds support for the latest WordPress version 7.0 and WooCommerce version 10.8.1.
 
 = 1.0.28 =
 * Compatibility with WPML - added missing file
