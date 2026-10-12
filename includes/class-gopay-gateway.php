@@ -658,12 +658,28 @@ function init_gopay_gateway_gateway() {
 			}
 
 			if ( ! empty( WC()->customer ) ) {
+				// On the order-pay page check the order being paid instead of the cart.
+				$order = $this->get_order_pay_order();
+
+				$products = array();
+				if ( $order ) {
+					foreach ( $order->get_items() as $item ) {
+						$product = $item->get_product();
+						if ( $product ) {
+							$products[] = $product;
+						}
+					}
+				} else {
+					foreach ( WC()->cart->get_cart_contents() as $item ) {
+						$products[] = $item['data'];
+					}
+				}
+
 				// Check if all products are virtual and/or downloadable.
 				$all_virtual_downloadable = true;
 				$all_virtual              = true;
 
-				foreach ( WC()->cart->get_cart_contents() as $item ) {
-					$product = $item['data'];
+				foreach ( $products as $product ) {
 					if ( ! $product->is_virtual() ) {
 						$all_virtual = false;
 					}
@@ -678,7 +694,7 @@ function init_gopay_gateway_gateway() {
 				// end check virtual or downloadable.
 
 				// Check countries.
-				$billing_country = WC()
+				$billing_country = $order ? $order->get_billing_country() : WC()
 					->cart->get_customer()
 					->get_billing_country();
 
@@ -693,8 +709,9 @@ function init_gopay_gateway_gateway() {
 				// end check countries.
 
 				// Check currency matches one of the supported currencies.
-				if ( ! get_woocommerce_currency() || ! array_key_exists(
-					get_woocommerce_currency(),
+				$currency = $order ? $order->get_currency() : get_woocommerce_currency();
+				if ( ! $currency || ! array_key_exists(
+					$currency,
 					$this->enable_currencies
 				) ) {
 					return false;
@@ -706,22 +723,18 @@ function init_gopay_gateway_gateway() {
 				}
 
 				// Check shipping methods.
-				if ( is_page( wc_get_page_id( 'checkout' ) ) &&
-					! empty( get_query_var( 'order-pay' ) )
-				) {
-					$order_id = absint( get_query_var( 'order-pay' ) );
-					$order    = wc_get_order( $order_id );
+				if ( $order ) {
+					// Compare method class IDs (e.g. free_shipping) as stored in settings,
+					// not method titles. Older orders may store method ID with instance ID.
+					$chosen_shipping_methods = array();
+					foreach ( $order->get_items( 'shipping' ) as $item_shipping ) {
+						$method_id = current( explode( ':', (string) $item_shipping->get_method_id() ) );
 
-					$items_shipping = $order->get_items( 'shipping' );
-					foreach ( $items_shipping as $item_shipping ) {
-						if ( ! in_array(
-							$item_shipping->get_method_title(),
-							(array) $this->enable_shipping_methods,
-							true
-						)
-						) {
-							return false;
-						}
+						$chosen_shipping_methods[] = $this->resolve_shipping_method_id( $method_id );
+					}
+
+					if ( array_diff( $chosen_shipping_methods, (array) $this->enable_shipping_methods ) ) {
+						return false;
 					}
 				} else {
 					$chosen_rates   = ! empty( WC()->session )
@@ -751,6 +764,22 @@ function init_gopay_gateway_gateway() {
 			}
 
 			return parent::is_available();
+		}
+
+		/**
+		 * Get order paid on the order-pay page.
+		 *
+		 * @return WC_Order|null Order, or null when not on the order-pay page.
+		 * @since  1.0.37
+		 */
+		private function get_order_pay_order(): ?WC_Order {
+			if ( ! is_page( wc_get_page_id( 'checkout' ) ) || empty( get_query_var( 'order-pay' ) ) ) {
+				return null;
+			}
+
+			$order = wc_get_order( absint( get_query_var( 'order-pay' ) ) );
+
+			return $order instanceof WC_Order ? $order : null;
 		}
 
 		/**
