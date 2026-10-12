@@ -422,20 +422,25 @@ class Gopay_Gateway_API {
 		$gopay    = self::auth_gopay( $options );
 		$response = $gopay->getStatus( $gopay_transaction_id );
 
-		$orders = wc_get_orders(
-			array(
-				'limit'        => 1,
-				'meta_key'     => 'GoPay_Transaction_id',
-				'meta_value'   => $gopay_transaction_id,
-				'meta_compare' => '=',
-			)
-		);
+		$order = self::find_order( $gopay_transaction_id, $response );
+		if ( empty( $order ) ) {
+			Gopay_Gateway_Log::insert_log(
+				array(
+					'order_id'       => 0,
+					'transaction_id' => $gopay_transaction_id,
+					'message'        => 'Order for GoPay payment not found',
+					'log_level'      => 'ERROR',
+					'log'            => $response,
+				)
+			);
 
-		if ( ! empty( $orders ) ) {
-			$order = $orders[0];
-		} else {
 			return;
 		}
+
+		// Only the current payment can change the order status,
+		// an older payment of the order can only pay it.
+		$is_current_payment = (string) $order->get_meta( 'GoPay_Transaction_id', true ) ===
+								(string) $gopay_transaction_id;
 
 		// Save log.
 		$log = array(
@@ -454,11 +459,31 @@ class Gopay_Gateway_API {
 
 		switch ( $response->json['state'] ) {
 			case 'PAID':
+				$transaction_id = $response->json['id'];
+
 				if ( $order->is_paid() ) {
+					// Order was already paid by another GoPay payment.
+					if ( (string) $order->get_transaction_id() !== (string) $transaction_id ) {
+						self::notify_duplicate_payment( $order, $transaction_id, $response );
+					}
 					wp_safe_redirect( $order->get_checkout_order_received_url() );
 					exit;
 				}
-				$transaction_id = $response->json['id'];
+
+				// Older payment was paid, use it as the order payment
+				// so refunds and recurrences are made from the paid one.
+				if ( ! $is_current_payment ) {
+					$order->add_order_note(
+						sprintf(
+							/* translators: %1$s: paid GoPay payment ID, %2$s: replaced GoPay payment ID */
+							__( 'Older GoPay payment %1$s was paid, it replaces the payment %2$s of the order.', 'gopay-gateway' ),
+							$transaction_id,
+							$order->get_meta( 'GoPay_Transaction_id', true )
+						)
+					);
+					$order->update_meta_data( 'GoPay_Transaction_id', $transaction_id );
+				}
+
 				$order->payment_complete( $transaction_id );
 
 				// Update retry status.
@@ -495,6 +520,11 @@ class Gopay_Gateway_API {
 			case 'CREATED':
 			case 'TIMEOUTED':
 			case 'CANCELED':
+				// Skip older payment, e.g. TIMEOUTED notification of abandoned
+				// payment must not fail the order while a newer payment is open.
+				if ( ! $is_current_payment ) {
+					self::skip_older_payment( $order, $gopay_transaction_id, $response->json['state'] );
+				}
 				// Skip if the order has already been paid (e.g. customer switched
 				// payment method to a bank transfer after abandoning the card payment).
 				// Without this check, a late TIMEOUTED notification from GoPay would
@@ -514,6 +544,9 @@ class Gopay_Gateway_API {
 
 				break;
 			case 'REFUNDED':
+				if ( ! $is_current_payment ) {
+					self::skip_older_payment( $order, $gopay_transaction_id, $response->json['state'] );
+				}
 				$order->set_status( 'refunded' );
 				$order->save();
 				wp_safe_redirect( $order->get_checkout_order_received_url() );
@@ -537,6 +570,144 @@ class Gopay_Gateway_API {
 		$response             = $gopay->getStatus( $gopay_transaction_id );
 
 		return $response;
+	}
+
+	/**
+	 * Add GoPay transaction id to order
+	 * The id becomes the current payment of the order and it is
+	 * kept in the payment history, so the order can be found
+	 * even when an older payment is paid. Order is not saved.
+	 *
+	 * @param WC_Order $order          Order.
+	 * @param string   $transaction_id GoPay transaction id.
+	 *
+	 * @since 1.0.37
+	 */
+	public static function add_transaction_id( WC_Order $order, string $transaction_id ) {
+		$order->update_meta_data( 'GoPay_Transaction_id', $transaction_id );
+
+		$transaction_ids = $order->get_meta( '_GoPay_Transaction_ids', false );
+		foreach ( $transaction_ids as $meta ) {
+			if ( (string) $meta->value === $transaction_id ) {
+				return;
+			}
+		}
+		$order->add_meta_data( '_GoPay_Transaction_ids', $transaction_id );
+	}
+
+	/**
+	 * Find order of the GoPay payment
+	 *
+	 * @param string   $gopay_transaction_id GoPay transaction id.
+	 * @param Response $response             GoPay payment status.
+	 *
+	 * @return WC_Order|null
+	 * @since  1.0.37
+	 */
+	private static function find_order( string $gopay_transaction_id, Response $response ): ?WC_Order {
+		// Current payment of the order and then older payments of the order.
+		foreach ( array( 'GoPay_Transaction_id', '_GoPay_Transaction_ids' ) as $meta_key ) {
+			$orders = wc_get_orders(
+				array(
+					'limit'        => 1,
+					'meta_key'     => $meta_key,
+					'meta_value'   => $gopay_transaction_id,
+					'meta_compare' => '=',
+				)
+			);
+
+			if ( ! empty( $orders ) ) {
+				return $orders[0];
+			}
+		}
+
+		// Order id from notification/return URL, used for orders
+		// created before the payment history was saved. Accept it only
+		// when the order number of the GoPay payment matches the order.
+		$order_id = filter_input( INPUT_GET, 'order_id', FILTER_VALIDATE_INT );
+		if ( empty( $order_id ) || 200 != $response->statusCode ||
+			empty( $response->json['order_number'] ) ) {
+			return null;
+		}
+
+		$order = wc_get_order( $order_id );
+		if ( ! $order instanceof WC_Order ||
+			(string) $order->get_order_number() !== (string) $response->json['order_number'] ) {
+			return null;
+		}
+
+		$order->add_meta_data( '_GoPay_Transaction_ids', $gopay_transaction_id );
+		$order->save();
+
+		return $order;
+	}
+
+	/**
+	 * Skip status change caused by older payment of the order
+	 *
+	 * @param WC_Order $order                Order.
+	 * @param string   $gopay_transaction_id GoPay transaction id.
+	 * @param string   $state                GoPay payment state.
+	 *
+	 * @since 1.0.37
+	 */
+	private static function skip_older_payment( WC_Order $order, string $gopay_transaction_id, string $state ) {
+		$order->add_order_note(
+			sprintf(
+				/* translators: %1$s: GoPay payment state (e.g. TIMEOUTED), %2$s: GoPay payment ID */
+				__( 'GoPay returned state "%1$s" for older payment %2$s of the order - status change skipped.', 'gopay-gateway' ),
+				$state,
+				$gopay_transaction_id
+			)
+		);
+		wp_safe_redirect( $order->get_checkout_order_received_url() );
+		exit;
+	}
+
+	/**
+	 * Notify about order paid by more GoPay payments
+	 *
+	 * @param WC_Order $order          Order.
+	 * @param string   $transaction_id GoPay transaction id of the duplicate payment.
+	 * @param Response $response       GoPay payment status.
+	 *
+	 * @since 1.0.37
+	 */
+	private static function notify_duplicate_payment( WC_Order $order, string $transaction_id, Response $response ) {
+		// Notify only once, GoPay may send the notification repeatedly.
+		foreach ( $order->get_meta( '_GoPay_Duplicate_paid_ids', false ) as $meta ) {
+			if ( (string) $meta->value === $transaction_id ) {
+				return;
+			}
+		}
+
+		$order->add_meta_data( '_GoPay_Duplicate_paid_ids', $transaction_id );
+		if ( ! empty( $order->get_transaction_id() ) ) {
+			$note = sprintf(
+				/* translators: %1$s: duplicate GoPay payment ID, %2$s: payment ID the order was paid by */
+				__( 'Order was paid more times: GoPay payment %1$s was paid, although the order was already paid by the payment %2$s. Please check the payments and refund the duplicate one in the GoPay account.', 'gopay-gateway' ),
+				$transaction_id,
+				$order->get_transaction_id()
+			);
+		} else {
+			$note = sprintf(
+				/* translators: %s: duplicate GoPay payment ID */
+				__( 'Order was paid more times: GoPay payment %s was paid, although the order was already paid. Please check the payments and refund the duplicate one in the GoPay account.', 'gopay-gateway' ),
+				$transaction_id
+			);
+		}
+		$order->add_order_note( $note );
+		$order->save();
+
+		Gopay_Gateway_Log::insert_log(
+			array(
+				'order_id'       => $order->get_id(),
+				'transaction_id' => $transaction_id,
+				'message'        => 'Order paid more times - duplicate payment',
+				'log_level'      => 'WARNING',
+				'log'            => $response,
+			)
+		);
 	}
 
 	/**
