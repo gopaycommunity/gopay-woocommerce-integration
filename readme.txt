@@ -59,6 +59,17 @@ First of all, install WordPress and WooCommerce, then upload and configure the p
 
 == Frequently Asked Questions ==
 
+= GoPay is missing or the cart/checkout does not work properly. What should I check? =
+Cookie consent, GDPR and privacy plugins can block the scripts and cookies used by GoPay. When this happens, GoPay payment data may not load in the cart or checkout. The GoPay payment method may then be missing, the "Proceed to Checkout" button may stop responding, or JavaScript errors may appear in the browser console.
+
+If you use such a plugin, open its settings and make sure GoPay is not blocked:
+
+* Remove GoPay from the plugin's block list, or add it to its allowlist (whitelist).
+* Allow the scripts of the GoPay gateway plugin and the GoPay domains.
+* Clear all caches (caching plugin, hosting cache, CDN) and test the cart and checkout again.
+
+If the problem persists, temporarily deactivate the other plugins one by one to find the conflicting one, and then contact GoPay support.
+
 = How will I receive my payments? =
 Successful payments will be automatically credited to the GoPay merchant account. We will send it from the merchant account to the registered bank account at the time of clearing.
 
