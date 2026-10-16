@@ -617,3 +617,23 @@ msgstr "Pozastavena"
 
 msgid "This card has been suspended by your bank. You cannot pay with it, but you can delete it."
 msgstr "Tato karta byla pozastavena vaší bankou. Nelze ji použít k platbě, ale můžete ji smazat."
+
+
+#, php-format
+msgid "Older GoPay payment %1$s was paid, it replaces the payment %2$s of the order."
+msgstr "Byla zaplacena starší GoPay platba %1$s, nahrazuje platbu %2$s objednávky."
+
+
+#, php-format
+msgid "GoPay returned state \"%1$s\" for older payment %2$s of the order - status change skipped."
+msgstr "GoPay vrátil stav „%1$s“ pro starší platbu %2$s objednávky – změna stavu přeskočena."
+
+
+#, php-format
+msgid "Order was paid more times: GoPay payment %1$s was paid, although the order was already paid by the payment %2$s. Please check the payments and refund the duplicate one in the GoPay account."
+msgstr "Objednávka byla zaplacena vícekrát: GoPay platba %1$s byla zaplacena, přestože objednávka již byla zaplacena platbou %2$s. Zkontrolujte prosím platby a duplicitní platbu vraťte v účtu GoPay."
+
+
+#, php-format
+msgid "Order was paid more times: GoPay payment %s was paid, although the order was already paid. Please check the payments and refund the duplicate one in the GoPay account."
+msgstr "Objednávka byla zaplacena vícekrát: GoPay platba %s byla zaplacena, přestože objednávka již byla zaplacena. Zkontrolujte prosím platby a duplicitní platbu vraťte v účtu GoPay."

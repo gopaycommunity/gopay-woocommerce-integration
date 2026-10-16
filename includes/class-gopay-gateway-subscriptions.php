@@ -234,7 +234,7 @@ class Gopay_Gateway_Subscriptions {
 		$response = Gopay_Gateway_API::create_recurrence( $renewal_order );
 
 		if ( 200 == $response->statusCode ) {
-			$renewal_order->update_meta_data( 'GoPay_Transaction_id', $response->json['id'] );
+			Gopay_Gateway_API::add_transaction_id( $renewal_order, (string) $response->json['id'] );
 		} else {
 			$renewal_order->update_status( 'failed' );
 		}

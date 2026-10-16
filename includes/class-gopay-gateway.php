@@ -1220,7 +1220,7 @@ function init_gopay_gateway_gateway() {
 
 				// Add GoPay transaction id to order.
 				// $order->set_status('on-hold'); !
-				$order->update_meta_data( 'GoPay_Transaction_id', $response->json['id'] );
+				Gopay_Gateway_API::add_transaction_id( $order, (string) $response->json['id'] );
 				$order->update_meta_data( '_GoPay_payment_created_at', time() );
 				$order->save();
 
