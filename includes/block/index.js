@@ -28,6 +28,10 @@ const checkApplePayAvailability = () => {
 
 // Function to filter available payment methods
 const filterPaymentMethods = (methods) => {
+	if (!Array.isArray(methods)) {
+		return [];
+	}
+
 	const applePayAvailable = checkApplePayAvailability();
 
 	// Filter methods – remove Apple Pay if it is not available
@@ -191,7 +195,7 @@ const GoPayGateway = {
 	label: settings.title || i18n.gopay,
 	content: createElement(GoPayMethodSelection),
 	edit: createElement(GoPayMethodSelection),
-	canMakePayment: () => true,
+	canMakePayment: () => filteredMethods.length > 0,
 	ariaLabel: settings.title || i18n.gopay,
 	supports: {
 		features: settings.supports || ['products']
