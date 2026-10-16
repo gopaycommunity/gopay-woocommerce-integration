@@ -101,6 +101,11 @@ After a successful payment, we send a notification about the change of the payme
 
 == Changelog ==
 
+= 1.0.37 =
+* Declared compatibility with WooCommerce version 11.2.0
+* Resolved issues with transaction ID tracking
+* Resolved issues with payment method not showing up on order-pay page
+
 = 1.0.36 =
 * Fix PHP warnings on the settings page when bank transfer is enabled for a currency with no banks assigned in the GoPay account
 * Resolve WPML compatibility issue caused by the cart being accessed before WooCommerce is fully loaded
