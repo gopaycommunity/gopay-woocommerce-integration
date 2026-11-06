@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GoPay gateway\n"
 "POT-Creation-Date: 2022-05-16 14:09+0200\n"
-"PO-Revision-Date: \n"
+"PO-Revision-Date: 2026-11-04 14:57+0100\n"
 "Last-Translator: \n"
 "Language-Team: Croatian\n"
 "Language: hr\n"
@@ -343,11 +343,19 @@ msgstr "Omogućite ponovni pokušaj plaćanja koristeći isti način plaćanja"
 
 
 msgid ""
-"If enabled, payment retry of a failed payment will be done using the same "
-"payment method that was selected when customer was placing an order."
+"If enabled, a failed payment can be retried only with the payment method "
+"selected when the customer placed the order. Orders with a subscription can "
+"be retried only with a payment card. If the original payment method is not "
+"available, all enabled payment methods are offered."
 msgstr ""
-"Ako je omogućeno, ponovni pokušaj plaćanja neuspjelog plaćanja izvršit će "
-"se istim načinom plaćanja koji je odabran kada je kupac slao narudžbu."
+"Ako je omogućeno, ponovni pokušaj neuspjelog plaćanja moguć je samo načinom "
+"plaćanja koji je kupac odabrao prilikom slanja narudžbe. Narudžbe s "
+"pretplatom mogu se ponovno platiti samo karticom za plaćanje. Ako izvorni "
+"način plaćanja nije dostupan, nude se svi omogućeni načini plaćanja."
+
+#, php-format
+msgid "Payment will be retried with: %s"
+msgstr "Plaćanje će se ponoviti načinom plaćanja: %s"
 
 
 

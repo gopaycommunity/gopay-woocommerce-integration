@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GoPay gateway\n"
 "POT-Creation-Date: 2022-05-16 14:09+0200\n"
-"PO-Revision-Date: \n"
+"PO-Revision-Date: 2026-11-04 14:57+0100\n"
 "Last-Translator: \n"
 "Language-Team: Bulgarian\n"
 "Language: bg_BG\n"
@@ -499,12 +499,20 @@ msgstr "Активиране на повторното плащане със с�
 
 
 msgid ""
-"If enabled, payment retry of a failed payment will be done using the same "
-"payment method that was selected when customer was placing an order."
+"If enabled, a failed payment can be retried only with the payment method "
+"selected when the customer placed the order. Orders with a subscription can "
+"be retried only with a payment card. If the original payment method is not "
+"available, all enabled payment methods are offered."
 msgstr ""
-"Ако е разрешено, повторното плащане на неуспешно плащане ще се извърши, "
-"като се използва същият метод на плащане, който е бил избран, когато "
-"клиентът е правил поръчка."
+"Ако е разрешено, неуспешно плащане може да бъде извършено повторно само със "
+"същия метод на плащане, който клиентът е избрал при създаването на "
+"поръчката. Поръчките с абонамент могат да бъдат платени повторно само с "
+"платежна карта. Ако първоначалният метод на плащане не е наличен, се "
+"предлагат всички разрешени методи на плащане."
+
+#, php-format
+msgid "Payment will be retried with: %s"
+msgstr "Плащането ще бъде извършено повторно с: %s"
 
 
 

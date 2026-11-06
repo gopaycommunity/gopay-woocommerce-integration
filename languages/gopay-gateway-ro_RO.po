@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GoPay gateway\n"
 "POT-Creation-Date: 2022-05-16 14:09+0200\n"
-"PO-Revision-Date: \n"
+"PO-Revision-Date: 2026-11-04 14:57+0100\n"
 "Last-Translator: \n"
 "Language-Team: Romenian\n"
 "Language: ro_RO\n"
@@ -345,12 +345,19 @@ msgstr "Activați reluarea plății utilizând aceeași metodă de plată"
 
 
 msgid ""
-"If enabled, payment retry of a failed payment will be done using the same "
-"payment method that was selected when customer was placing an order."
+"If enabled, a failed payment can be retried only with the payment method "
+"selected when the customer placed the order. Orders with a subscription can "
+"be retried only with a payment card. If the original payment method is not "
+"available, all enabled payment methods are offered."
 msgstr ""
-"Dacă este activată, reluarea unei plăți eșuate se va face utilizând "
-"aceeași metodă de plată care a fost selectată atunci când clientul a "
-"plasat o comandă."
+"Dacă este activată, reluarea unei plăți eșuate este posibilă doar cu metoda "
+"de plată selectată de client la plasarea comenzii. Comenzile cu abonament "
+"pot fi reluate doar cu cardul de plată. Dacă metoda de plată inițială nu "
+"este disponibilă, sunt oferite toate metodele de plată activate."
+
+#, php-format
+msgid "Payment will be retried with: %s"
+msgstr "Plata va fi reluată cu metoda: %s"
 
 
 
