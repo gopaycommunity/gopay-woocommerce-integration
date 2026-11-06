@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
  */
 final class WC_Gopay_Blocks_Support extends AbstractPaymentMethodType {
 	private $gateway;
-	protected $name = 'gopay';
+	protected $name = GOPAY_GATEWAY_ID;
 
 	public function initialize() {
 		$this->settings = get_option( 'woocommerce_' . GOPAY_GATEWAY_ID . '_settings' );

@@ -5,7 +5,8 @@ const i18n = window.gopayI18n || {};
 
 
 // Retrieving settings from data provided by PHP
-const settings = getSetting('gopay_data', {});
+// Key is "<integration name>_data"; the name equals the gateway ID (see class-gopay-wc-blocks-support.php).
+const settings = getSetting('wc_gopay_gateway_data', {});
 
 // Function to check Apple Pay availability
 const checkApplePayAvailability = () => {
