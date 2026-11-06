@@ -1128,6 +1128,9 @@ function init_gopay_gateway_gateway() {
 		 */
 		public function process_payment( $order_id ): array {
 			$order = wc_get_order( $order_id );
+			// Order status and time before this request, used by the duplicate-submit guard.
+			$previous_status = $order->get_status();
+			$request_started = time();
 			$order->set_status( 'pending' );
 			$order->save();
 
@@ -1156,18 +1159,23 @@ function init_gopay_gateway_gateway() {
 				$last_created_at = (int) $order->get_meta( '_GoPay_payment_created_at' );
 				$dedupe_window   = (int) apply_filters( 'gopay_gateway_payment_dedupe_window', 30 );
 
-				if ( $existing_tx_id && $last_created_at && ( time() - $last_created_at ) < $dedupe_window ) {
+				// Failed order = the customer came back from the gateway without paying, so this
+				// is a new payment attempt and the abandoned payment is not reused. A payment
+				// created by a concurrent request (double click) is newer than this request.
+				$is_new_attempt = 'failed' === $previous_status && $last_created_at < $request_started;
+
+				if ( ! $is_new_attempt && $existing_tx_id && $last_created_at && ( time() - $last_created_at ) < $dedupe_window ) {
 					$status          = Gopay_Gateway_API::get_status( $order_id );
 					$reusable_states = array( 'CREATED', 'PAYMENT_METHOD_CHOSEN', 'AUTHORIZED' );
 
-					if ( 200 === $status->statusCode
+					if ( 200 === (int) $status->statusCode
 						&& in_array( $status->json['state'] ?? '', $reusable_states, true )
 						&& ! empty( $status->json['gw_url'] ) ) {
 
 						Gopay_Gateway_Log::insert_log( array(
 							'order_id'       => $order_id,
 							'transaction_id' => $existing_tx_id,
-							'message'        => 'Duplicate process_payment - reusing existing GoPay payment',
+							'message'        => 'Duplicate submit - reusing GoPay payment',
 							'log_level'      => 'INFO',
 							'log'            => $status,
 						) );
@@ -1222,11 +1230,6 @@ function init_gopay_gateway_gateway() {
 				$card_id              = '';
 
 				if ( empty( $retry_instruments ) ) {
-					// Payment data from the classic checkout or from the Checkout block.
-					// The Store API copies payment_data to $_POST only, so filter_input()
-					// would not see it and the payment method would not be saved to the order.
-					// Nonce is verified by WooCommerce before process_payment() is called.
-					// phpcs:disable WordPress.Security.NonceVerification
 					if ( isset( $_POST['gopay_payment_method'] ) ) {
 						$gopay_payment_method = sanitize_text_field( wp_unslash( $_POST['gopay_payment_method'] ) );
 					} elseif ( isset( $_REQUEST['payment_data']['gopay_payment_method'] ) ) {
