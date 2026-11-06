@@ -446,6 +446,17 @@ class Gopay_Gateway_Options {
 	}
 
 	/**
+	 * Return payment methods treated as one group on payment retry.
+	 * Customer who paid by any of them can retry the payment by any of them.
+	 *
+	 * @return array
+	 * @since  1.0.38
+	 */
+	public static function retry_card_payment_methods(): array {
+		return array( 'PAYMENT_CARD', 'GPAY', 'APPLE_PAY', 'CLICK_TO_PAY' );
+	}
+
+	/**
 	 * Return supported banks for bank payment that
 	 * the gateway can use
 	 *

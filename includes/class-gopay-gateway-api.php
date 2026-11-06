@@ -94,13 +94,16 @@ class Gopay_Gateway_API {
 	 * @param ?string  $gopay_payment_method payment method.
 	 * @param WC_Order $order                order detail.
 	 * @param string   $end_date             the end date of recurrence.
-	 * @param bool     $is_retry             is payment retry.
+	 * @param ?array   $retry_instruments    payment instruments allowed on payment retry,
+	 *                                       null if it is not a retry or the original method is unknown.
+	 * @param bool     $request_card_token   request card tokenization.
+	 * @param string   $card_id              id of the saved card.
 	 *
 	 * @return Response
 	 * @since 1.0.0
 	 */
 	public static function create_payment( ?string $gopay_payment_method, WC_Order $order,
-									string $end_date, $is_retry, bool $request_card_token, string $card_id ): Response {
+									string $end_date, ?array $retry_instruments, bool $request_card_token, string $card_id ): Response {
 		$options = get_option( 'woocommerce_' . GOPAY_GATEWAY_ID . '_settings' );
 		$gopay   = self::auth_gopay( $options );
 
@@ -110,14 +113,14 @@ class Gopay_Gateway_API {
 			$gopay_payment_method = 'BANK_ACCOUNT';
 		}
 
-		if ( empty( $order->get_meta( '_GoPay_payment_method' ) ) || ! $is_retry ) {
-			if ( ! empty( $gopay_payment_method ) ) {
-				$default_payment_instrument = $gopay_payment_method;
-			} else {
-				$default_payment_instrument = '';
-			}
+		// On payment retry only the original payment method (or its group) is allowed.
+		if ( ! empty( $retry_instruments ) ) {
+			$default_payment_instrument  = $retry_instruments['default'];
+			$allowed_payment_instruments = $retry_instruments['allowed'];
+			$default_swift               = $retry_instruments['swift'];
 		} else {
-			$default_payment_instrument = $order->get_meta( '_GoPay_payment_method' );
+			$default_payment_instrument  = ! empty( $gopay_payment_method ) ? $gopay_payment_method : '';
+			$allowed_payment_instruments = $options['enable_gopay_payment_methods'];
 		}
 
 		$items = self::get_items( $order );
@@ -156,7 +159,7 @@ class Gopay_Gateway_API {
 		if ( ! empty( $default_payment_instrument ) ) {
 			$payer = array(
 				'default_payment_instrument'  => $default_payment_instrument,
-				'allowed_payment_instruments' => $options['enable_gopay_payment_methods'],
+				'allowed_payment_instruments' => $allowed_payment_instruments,
 				'allowed_swifts'              => ! empty( $options['enable_banks'] ) ? $options['enable_banks'] : array(),
 				'contact'                     => $contact,
 			);
@@ -187,7 +190,7 @@ class Gopay_Gateway_API {
 			}
 		} else {
 			$payer = array(
-				'allowed_payment_instruments' => $options['enable_gopay_payment_methods'],
+				'allowed_payment_instruments' => $allowed_payment_instruments,
 				'allowed_swifts'              => ! empty( $options['enable_banks'] ) ? $options['enable_banks'] : array(),
 				'contact'                     => $contact,
 			);
@@ -231,6 +234,65 @@ class Gopay_Gateway_API {
 		$response = $gopay->createPayment( $data );
 
 		return $response;
+	}
+
+	/**
+	 * Get payment instruments allowed on payment retry
+	 *
+	 * Orders with a subscription (recurrence) can be retried by payment card only.
+	 * Otherwise only the payment method selected when the order was placed is allowed,
+	 * payment card and wallets are treated as one group.
+	 *
+	 * @param WC_Order $order order detail.
+	 *
+	 * @return array|null array with keys allowed, default and swift,
+	 *                    null if the original payment method is unknown or no longer available.
+	 * @since  1.0.38
+	 */
+	public static function get_retry_payment_instruments( WC_Order $order ): ?array {
+		$options = get_option( 'woocommerce_' . GOPAY_GATEWAY_ID . '_settings', array() );
+		$method  = (string) $order->get_meta( '_GoPay_payment_method' );
+
+		if ( ! empty( Gopay_Gateway_Subscriptions::get_subscription_data( $order ) ) ) {
+			$group = array( 'PAYMENT_CARD' );
+		} elseif ( empty( $method ) ) {
+			return null;
+		} elseif ( in_array( $method, Gopay_Gateway_Options::retry_card_payment_methods(), true ) ) {
+			$group = Gopay_Gateway_Options::retry_card_payment_methods();
+		} else {
+			$group = array( $method );
+		}
+
+		// Only enabled in the settings and supported by the currency of the order.
+		$enabled   = ! empty( $options['enable_gopay_payment_methods'] ) ?
+			(array) $options['enable_gopay_payment_methods'] : array();
+		$supported = ! empty( $options[ 'gopay_payment_methods_' . $order->get_currency() ] ) ?
+			array_keys( (array) $options[ 'gopay_payment_methods_' . $order->get_currency() ] ) : array();
+		$allowed   = array_values( array_intersect( $group, $enabled, $supported ) );
+
+		if ( empty( $allowed ) ) {
+			return null;
+		}
+
+		$default = in_array( $method, $allowed, true ) ? $method : $allowed[0];
+
+		$swift = '';
+		if ( 'BANK_ACCOUNT' === $default ) {
+			$bank_swift      = (string) $order->get_meta( '_GoPay_bank_swift' );
+			$enabled_banks   = ! empty( $options['enable_banks'] ) ? (array) $options['enable_banks'] : array();
+			$supported_banks = ! empty( $options[ 'gopay_banks_' . $order->get_currency() ] ) ?
+				array_keys( (array) $options[ 'gopay_banks_' . $order->get_currency() ] ) : array();
+
+			if ( in_array( $bank_swift, $enabled_banks, true ) && in_array( $bank_swift, $supported_banks, true ) ) {
+				$swift = $bank_swift;
+			}
+		}
+
+		return array(
+			'allowed' => $allowed,
+			'default' => $default,
+			'swift'   => $swift,
+		);
 	}
 
 	/**

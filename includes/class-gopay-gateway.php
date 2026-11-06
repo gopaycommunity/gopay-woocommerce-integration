@@ -165,6 +165,19 @@ function init_gopay_gateway_gateway() {
 		}
 
 		/**
+		 * Check if the current payment is a payment retry
+		 * (retry option enabled and customer pays an existing order on the order-pay page).
+		 *
+		 * @return bool
+		 * @since  1.0.38
+		 */
+		private function is_payment_retry(): bool {
+			return $this->payment_retry &&
+				is_page( wc_get_page_id( 'checkout' ) ) &&
+				! empty( get_query_var( 'order-pay' ) );
+		}
+
+		/**
 		 * Get Gopay_Gateway_Gateway instance if it exists
 		 * or create a new one.
 		 *
@@ -569,7 +582,7 @@ function init_gopay_gateway_gateway() {
 							'gopay-gateway'
 						),
 						'description' => __(
-							'If enabled, payment retry of a failed payment will be done using the same payment method that was selected when customer was placing an order.',
+							'If enabled, a failed payment can be retried only with the payment method selected when the customer placed the order. Orders with a subscription can be retried only with a payment card. If the original payment method is not available, all enabled payment methods are offered.',
 							'gopay-gateway'
 						),
 						'desc_tip'    => true,
@@ -869,10 +882,15 @@ function init_gopay_gateway_gateway() {
 
 			$enabled_payment_methods = '';
 			$checked                 = 'checked="checked"';
-			$payment_retry           = ( $this->payment_retry &&
-				is_page( wc_get_page_id( 'checkout' ) ) &&
-				! empty( get_query_var( 'order-pay' ) ) );
-			if ( ! $payment_retry ) {
+			$retry_instruments       = null;
+			if ( $this->is_payment_retry() ) {
+				$order             = wc_get_order( absint( get_query_var( 'order-pay' ) ) );
+				$retry_instruments = $order ? Gopay_Gateway_API::get_retry_payment_instruments( $order ) : null;
+			}
+
+			// Payment methods selection, also on payment retry when the original
+			// payment method is unknown or no longer available.
+			if ( empty( $retry_instruments ) ) {
 				// Only supported by the currency.
 				$supported_payment_methods = $this->get_option(
 					'gopay_payment_methods_' . get_woocommerce_currency(),
@@ -1047,6 +1065,29 @@ function init_gopay_gateway_gateway() {
 
 					$checked = '';
 				}
+			} else {
+				// Payment retry - only the original payment method (or its group) is allowed.
+				$payment_methods = Gopay_Gateway_Options::supported_payment_methods();
+				$banks           = Gopay_Gateway_Options::supported_banks();
+				$labels          = array();
+				foreach ( $retry_instruments['allowed'] as $payment_method ) {
+					$label = $payment_methods[ $payment_method ]['label'] ?? $payment_method;
+
+					// Preselected bank, e.g. "Bank account (Komerční Banka)".
+					if ( 'BANK_ACCOUNT' === $payment_method && ! empty( $banks[ $retry_instruments['swift'] ]['label'] ) ) {
+						$label .= ' (' . $banks[ $retry_instruments['swift'] ]['label'] . ')';
+					}
+
+					$labels[] = $label;
+				}
+
+				echo '<p class="payment_method_' . esc_attr( GOPAY_GATEWAY_ID ) . '_retry">' . esc_html(
+					sprintf(
+						/* translators: %s: comma separated list of payment methods. */
+						__( 'Payment will be retried with: %s', 'gopay-gateway' ),
+						implode( ', ', $labels )
+					)
+				) . '</p>';
 			}
 
 			// Check if Apple pay is available.
@@ -1170,13 +1211,37 @@ function init_gopay_gateway_gateway() {
 					);
 				}
 
-				$gopay_payment_method = filter_input( INPUT_POST, 'gopay_payment_method' );
-				$is_retry             = $this->payment_retry &&
-											is_page( wc_get_page_id( 'checkout' ) ) &&
-											! empty( get_query_var( 'order-pay' ) );
+				// On payment retry with a known original payment method, the payment
+				// method is taken from the order and the request is ignored,
+				// so the restriction cannot be bypassed.
+				$retry_instruments = $this->is_payment_retry() ?
+					Gopay_Gateway_API::get_retry_payment_instruments( $order ) : null;
 
-				$request_card_token = filter_input( INPUT_POST, 'request_card_token' ) ?? false;
-				$card_id = filter_input( INPUT_POST, 'saved_card' ) ?? '';
+				$gopay_payment_method = '';
+				$request_card_token   = false;
+				$card_id              = '';
+
+				if ( empty( $retry_instruments ) ) {
+					// Payment data from the classic checkout or from the Checkout block.
+					// The Store API copies payment_data to $_POST only, so filter_input()
+					// would not see it and the payment method would not be saved to the order.
+					// Nonce is verified by WooCommerce before process_payment() is called.
+					// phpcs:disable WordPress.Security.NonceVerification
+					if ( isset( $_POST['gopay_payment_method'] ) ) {
+						$gopay_payment_method = sanitize_text_field( wp_unslash( $_POST['gopay_payment_method'] ) );
+					} elseif ( isset( $_REQUEST['payment_data']['gopay_payment_method'] ) ) {
+						$gopay_payment_method = sanitize_text_field( wp_unslash( $_REQUEST['payment_data']['gopay_payment_method'] ) );
+					}
+
+					if ( isset( $_POST['request_card_token'] ) ) {
+						$request_card_token = sanitize_text_field( wp_unslash( $_POST['request_card_token'] ) );
+					}
+
+					if ( isset( $_POST['saved_card'] ) ) {
+						$card_id = sanitize_text_field( wp_unslash( $_POST['saved_card'] ) );
+					}
+					// phpcs:enable WordPress.Security.NonceVerification
+				}
 
 				// Add GoPay payment method to order.
 				if ( $gopay_payment_method ) {
@@ -1192,26 +1257,11 @@ function init_gopay_gateway_gateway() {
 				// Rounding total to 2 decimals.
 				$order->set_total( wc_format_decimal( $order->get_total(), 2 ) );
 
-				// Try to get Payment method from $_POST or $_Request
-				if (isset($_POST['gopay_payment_method'])) {
-					$gopay_payment_method = sanitize_text_field($_POST['gopay_payment_method']);
-				} elseif (isset($_REQUEST['payment_data']) && isset($_REQUEST['payment_data']['gopay_payment_method'])) {
-					$gopay_payment_method = sanitize_text_field($_REQUEST['payment_data']['gopay_payment_method']);
-				}
-
-				if (isset($_POST['saved_card'])) {
-					$card_id = sanitize_text_field($_POST['saved_card']);
-				}
-
-				if (isset($_POST['request_card_token'])) {
-					$request_card_token = sanitize_text_field($_POST['request_card_token']);
-				}
-
 				$response = Gopay_Gateway_API::create_payment(
 					$gopay_payment_method,
 					$order,
 					! empty( $subscription ) ? ( $subscription->get_date( 'end' ) ?: gmdate( 'Y-m-d', strtotime( '+5 years' ) ) ) : '',
-					$is_retry,
+					$retry_instruments,
 					$request_card_token,
 					$card_id
 				);
