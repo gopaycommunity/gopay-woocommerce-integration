@@ -4,7 +4,7 @@ Tags: WooCommerce, GoPay
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.0.37
+Stable tag: 1.0.38
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -100,6 +100,13 @@ After a successful payment, we send a notification about the change of the payme
 1 - WooCommerce Subscriptions must be installed if you need to deal with recurring payments.
 
 == Changelog ==
+
+= 1.0.38 =
+* Declared compatibility with WooCommerce version 11.3.0
+* Resolved false "Limited compatibility" warning for GoPay in WooCommerce payment settings when using the Checkout block
+* Payment retry using the same payment method now offers only the originally selected payment method on the GoPay payment gateway
+* Resolved issue with the payment method not being saved to the order when using the Checkout block
+* Resolved issue with the protection against duplicate payment submission
 
 = 1.0.37 =
 * Declared compatibility with WooCommerce version 11.2.0
